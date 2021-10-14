@@ -1,0 +1,62 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides
+
+---
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+env:
+  RUST_BACKTRACE: full
+
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: |
+          rustup update --no-self-update stable
+          rustup component add rustfmt
+      - name: Run
+        run: cargo fmt --all
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: |
+          rustup update --no-self-update stable
+          rustup component add clippy
+      - name: Run
+        run: cargo clippy --all-features --all-targets -- -A clippy::all
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: |
+          rustup update --no-self-update stable
+          cargo install cargo-hack --debug
+      - name: Run
+        run: cargo hack check --all-features --all-targets
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: |
+          rustup update --no-self-update stable
+      - name: Run
+        run: cargo test --all-features --all-targets
