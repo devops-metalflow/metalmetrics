@@ -16,56 +16,36 @@ fn main() {
     let app = App::new("metalmetrics-rs")
         .version(concat!(env!("CARGO_PKG_VERSION"), "-build-", env!("build")))
         .arg(
-            Arg::new("attachments")
-                .long("attachments")
-                .value_name("ATTACHMENTS")
-                .about("Attachments list (attach,...)")
-                .takes_value(true)
-                .required(false),
-        )
-        .arg(
-            Arg::new("body")
-                .long("body")
-                .value_name("BODY")
-                .about("Body content")
-                .takes_value(true)
-                .required(false),
-        )
-        .arg(
-            Arg::new("config")
-                .long("config")
-                .value_name("CONFIG")
-                .about("Config file (.yml)")
+            Arg::new("config-file")
+                .long("config_file")
+                .value_name("NAME")
+                .about("config file (.yml)")
                 .takes_value(true)
                 .required(true),
         )
         .arg(
-            Arg::new("header")
-                .long("header")
-                .value_name("HEADER")
-                .about("Header content")
+            Arg::new("inxi-file")
+                .long("inxi_file")
+                .value_name("NAME")
+                .about("inxi file (/path/to/inxi)")
                 .takes_value(true)
                 .required(false),
         )
         .arg(
-            Arg::new("recipients")
-                .long("recipients")
-                .value_name("RECIPIENTS")
-                .about("Recipients list (alen@example.com,cc:bob@example.com,...)")
+            Arg::new("listen-url")
+                .long("listen_url")
+                .value_name("URL")
+                .about("listen url (host:port)")
                 .takes_value(true)
-                .required(true),
+                .required(false),
         )
         .arg(
-            Arg::new("title")
-                .long("title")
-                .value_name("TITLE")
-                .about("Title content")
+            Arg::new("output-file")
+                .long("output_file")
+                .value_name("NAME")
+                .about("output file (.json|.txt|.xlsx)")
                 .takes_value(true)
-                .required(true),
+                .required(false),
         )
         .get_matches();
-
-    if let Some(attachments) = app.value_of("attachments") {
-        println!("{}", attachments);
-    }
 }
