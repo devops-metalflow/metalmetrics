@@ -40,7 +40,16 @@
 ## Usage
 
 ```
-TODO
+USAGE:
+    metalmetrics-rs [OPTIONS] --config_file <NAME>
+
+OPTIONS:
+        --config_file <NAME>    config file (.yml)
+    -h, --help                  Print help information
+        --inxi_file <NAME>      inxi file (/path/to/inxi)
+        --listen_url <URL>      listen url (host:port)
+        --output_file <NAME>    output file (.json|.txt|.xlsx)
+    -V, --version               Print version information
 ```
 
 

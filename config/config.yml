@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: worker
+metadata:
+  name: metalmetrics-rs
+spec:
+  metrics:
+    - cpu
+    - disk
+    - io
+    - ip
+    - kernel
+    - mac
+    - network
+    - os
+    - ram
+    - system
+    - users

@@ -1,4 +1,6 @@
 #!/bin/bash
 
+build=$(date +%FT%T%z)
+
 # rustup update --no-self-update stable
-cargo test --all-features --all-targets
+build=$build cargo test --all-features --all-targets
