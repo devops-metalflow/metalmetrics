@@ -56,9 +56,9 @@ OPTIONS:
 
 ## Settings
 
-*metalmetrics-rs* parameters can be set in the directory [config](https://github.com/craftslab/metalmetrics-rs/blob/master/config).
+*metalmetrics-rs* parameters can be set in the directory [config](https://github.com/craftslab/metalmetrics-rs/blob/master/src/config).
 
-An example of configuration in [config.yml](https://github.com/craftslab/metalmetrics-rs/blob/master/config/config.yml):
+An example of configuration in [config.yml](https://github.com/craftslab/metalmetrics-rs/blob/master/src/config/config.yml):
 
 ```yaml
 apiVersion: v1
