@@ -5,8 +5,8 @@ fn main() {
         .version(concat!(env!("CARGO_PKG_VERSION"), "-build-", env!("build")))
         .arg(
             Arg::new("config_file")
-                .long("config-file")
                 .short('c')
+                .long("config-file")
                 .value_name("NAME")
                 .about("config file (.yml)")
                 .takes_value(true)
@@ -14,8 +14,8 @@ fn main() {
         )
         .arg(
             Arg::new("inxi_file")
-                .long("inxi-file")
                 .short('i')
+                .long("inxi-file")
                 .value_name("NAME")
                 .about("inxi file (/path/to/inxi)")
                 .takes_value(true)
@@ -23,8 +23,8 @@ fn main() {
         )
         .arg(
             Arg::new("listen_url")
-                .long("listen-url")
                 .short('l')
+                .long("listen-url")
                 .value_name("URL")
                 .about("listen url (host:port)")
                 .takes_value(true)
@@ -32,8 +32,8 @@ fn main() {
         )
         .arg(
             Arg::new("output_file")
-                .long("output-file")
                 .short('o')
+                .long("output-file")
                 .value_name("NAME")
                 .about("output file (.json|.txt|.xlsx)")
                 .takes_value(true)
