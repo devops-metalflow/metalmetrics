@@ -16,36 +16,41 @@ fn main() {
     let app = App::new("metalmetrics-rs")
         .version(concat!(env!("CARGO_PKG_VERSION"), "-build-", env!("build")))
         .arg(
-            Arg::new("config-file")
-                .long("config_file")
+            Arg::new("config_file")
+                .long("config-file")
+                .short('c')
                 .value_name("NAME")
                 .about("config file (.yml)")
                 .takes_value(true)
                 .required(true),
         )
         .arg(
-            Arg::new("inxi-file")
-                .long("inxi_file")
+            Arg::new("inxi_file")
+                .long("inxi-file")
+                .short('i')
                 .value_name("NAME")
                 .about("inxi file (/path/to/inxi)")
                 .takes_value(true)
                 .required(false),
         )
         .arg(
-            Arg::new("listen-url")
-                .long("listen_url")
+            Arg::new("listen_url")
+                .long("listen-url")
+                .short('l')
                 .value_name("URL")
                 .about("listen url (host:port)")
                 .takes_value(true)
                 .required(false),
         )
         .arg(
-            Arg::new("output-file")
-                .long("output_file")
+            Arg::new("output_file")
+                .long("output-file")
+                .short('o')
                 .value_name("NAME")
                 .about("output file (.json|.txt|.xlsx)")
                 .takes_value(true)
-                .required(false),
+                .required(false)
+                .conflicts_with("listen_url"),
         )
         .get_matches();
 }

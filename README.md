@@ -41,14 +41,14 @@
 
 ```
 USAGE:
-    metalmetrics-rs [OPTIONS] --config_file <NAME>
+    metalmetrics-rs [OPTIONS] --config-file <NAME>
 
 OPTIONS:
-        --config_file <NAME>    config file (.yml)
+    -c, --config-file <NAME>    config file (.yml)
     -h, --help                  Print help information
-        --inxi_file <NAME>      inxi file (/path/to/inxi)
-        --listen_url <URL>      listen url (host:port)
-        --output_file <NAME>    output file (.json|.txt|.xlsx)
+    -i, --inxi-file <NAME>      inxi file (/path/to/inxi)
+    -l, --listen-url <URL>      listen url (host:port)
+    -o, --output-file <NAME>    output file (.json|.txt|.xlsx)
     -V, --version               Print version information
 ```
 
