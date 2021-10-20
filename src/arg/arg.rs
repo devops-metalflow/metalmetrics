@@ -1,5 +1,6 @@
 use clap::{App, Arg};
 
+#[derive(Debug)]
 pub struct Argument {
     pub config_file: String,
     pub inxi_file: String,
