@@ -3,19 +3,24 @@
 [package]
 name = "metalmetrics-rs"
 version = "0.0.1"
-description = "Metal metrics in Rust"
-readme = "README.md"
-homepage = "https://github.com/craftslab/metalmetrics-rs"
-repository = "https://github.com/craftslab/metalmetrics-rs"
-license = "MIT"
-authors = ["Jia Jia <angersax@sina.com>"]
-categories = ["metrics", "network-programming"]
-keywords = ["metal", "metrics", "rust"]
 edition = "2018"
-
-[badges]
-maintenance = { status = "actively-developed" }
+authors = ["Jia Jia <angersax@sina.com>"]
+include = [
+    "src/**/*",
+    "Cargo.toml",
+    "README.md"
+]
+description = "Metal metrics in Rust"
+repository = "https://github.com/craftslab/metalmetrics-rs"
+documentation = "https://github.com/craftslab/metalmetrics-rs"
+homepage = "https://github.com/craftslab/metalmetrics-rs"
+keywords = ["metal", "metrics", "rust"]
+categories = ["metrics"]
+license = "MIT"
+readme = "README.md"
 
 [dependencies]
 clap = "3.0.0-beta.4"
-lettre = "0.10.0-rc.3"
+
+[badges]
+maintenance = { status = "actively-developed" }
