@@ -1,6 +1,7 @@
 use clap::{App, Arg};
+use std::error::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Argument {
     pub config_file: String,
     pub inxi_file: String,
@@ -9,7 +10,7 @@ pub struct Argument {
 }
 
 impl Argument {
-    pub fn parse(&mut self) {
+    pub fn parse(&mut self) -> Result<(), Box<dyn Error>> {
         let matches = App::new("metalmetrics-rs")
             .version(concat!(env!("CARGO_PKG_VERSION"), "-build-", env!("build")))
             .arg(
@@ -70,5 +71,7 @@ impl Argument {
             Some(name) => self.output_file = name.to_string(),
             None => self.output_file = "".to_string(),
         }
+
+        Ok(())
     }
 }

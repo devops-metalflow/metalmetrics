@@ -12,4 +12,4 @@ build=$build cargo clippy --all-features --all-targets -- -A clippy::all
 
 # rustup update --no-self-update stable
 # cargo install cargo-hack --debug
-build=$build cargo hack check --all-features --all-targets
+#build=$build cargo hack check --all-features --all-targets
