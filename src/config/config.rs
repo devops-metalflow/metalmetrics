@@ -33,10 +33,11 @@ pub struct Spec {
 
 impl Config {
     pub fn build(&mut self) -> Result<(), Box<dyn Error>> {
+        // TODO
         Ok(())
     }
 
-    fn _config(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn config(&mut self) -> Result<(), Box<dyn Error>> {
         if self.config_file.len() == 0 {
             return Err("name invalid".into());
         }
@@ -50,12 +51,12 @@ impl Config {
         }
 
         let f = File::open(&self.config_file)?;
-        self.config_data = serde_yaml::from_reader(f)?;
+        self.config_data = serde_yaml::from_reader(f)?; // TODO: FIXME
 
         Ok(())
     }
 
-    fn _inxi(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn inxi(&mut self) -> Result<(), Box<dyn Error>> {
         if self.inxi_file.len() != 0 {
             if !Path::new(&self.inxi_file).exists() {
                 return Err(format!("{} not found", self.inxi_file).into());
@@ -65,15 +66,12 @@ impl Config {
         Ok(())
     }
 
-    fn _url(&mut self) -> Result<(), Box<dyn Error>> {
-        if self.listen_url.len() == 0 {
-            return Err("url invalid".into());
-        }
-
+    pub fn listen(&mut self) -> Result<(), Box<dyn Error>> {
+        // PASS
         Ok(())
     }
 
-    fn _output(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn output(&mut self) -> Result<(), Box<dyn Error>> {
         if self.output_file.len() != 0 {
             if !self.output_file.ends_with(".json")
                 && !self.output_file.ends_with(".txt")
