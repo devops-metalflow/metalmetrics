@@ -19,12 +19,8 @@ fn main() {
         ..Default::default()
     };
 
-    let c = cfg.build();
-    let c = match c {
-        Ok(buf) => buf,
-        Err(err) => {
-            println!("failed to build config: {}", err);
-            process::exit(-2);
-        }
-    };
+    if let Err(err) = cfg.build() {
+        println!("failed to build config: {}", err);
+        process::exit(-2);
+    }
 }

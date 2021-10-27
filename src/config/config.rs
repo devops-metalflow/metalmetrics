@@ -13,11 +13,12 @@ pub struct Config {
     pub output_file: String,
 }
 
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct ConfigData {
-    pub api_version: String,
+    pub apiVersion: String,
     pub kind: String,
-    pub meta_data: MetaData,
+    pub metadata: MetaData,
     pub spec: Spec,
 }
 
@@ -33,7 +34,11 @@ pub struct Spec {
 
 impl Config {
     pub fn build(&mut self) -> Result<(), Box<dyn Error>> {
-        // TODO
+        self.config()?;
+        self.inxi()?;
+        self.listen()?;
+        self.output()?;
+
         Ok(())
     }
 
@@ -51,7 +56,7 @@ impl Config {
         }
 
         let f = File::open(&self.config_file)?;
-        self.config_data = serde_yaml::from_reader(f)?; // TODO: FIXME
+        self.config_data = serde_yaml::from_reader(f)?;
 
         Ok(())
     }
