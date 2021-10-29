@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package flow;
+
+// The service definition.
+service FlowProto {
+  // Sends flow
+  rpc SendFlow (FlowRequest) returns (FlowReply) {}
+}
+
+// The request message.
+message FlowRequest {
+  string message = 1;
+}
+
+// The response message.
+message FlowReply {
+  string message = 1;
+}
