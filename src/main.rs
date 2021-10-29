@@ -16,6 +16,10 @@ fn main() {
     }
 
     let mut cfg = Config {
+        config_file: args.config_file,
+        inxi_file: args.inxi_file,
+        listen_url: args.listen_url,
+        output_file: args.output_file,
         ..Default::default()
     };
 
