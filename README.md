@@ -14,7 +14,6 @@
 
 ## Prerequisites
 
-- Lettre >= 0.9.6
 - Rust >= 1.52.0
 
 
