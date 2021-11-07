@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 use std::error::Error;
 
-#[derive(Debug, Default)]
+#[derive(Clone, Default)]
 pub struct Argument {
     pub config_file: String,
     pub inxi_file: String,

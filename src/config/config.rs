@@ -4,7 +4,7 @@ use std::error::Error;
 use std::fs::File;
 use std::path::Path;
 
-#[derive(Debug, Default)]
+#[derive(Clone, Default)]
 pub struct Config {
     pub config_data: ConfigData,
     pub config_file: String,
@@ -14,7 +14,7 @@ pub struct Config {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Default, Deserialize, Serialize)]
 pub struct ConfigData {
     pub apiVersion: String,
     pub kind: String,
@@ -22,12 +22,12 @@ pub struct ConfigData {
     pub spec: Spec,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Default, Deserialize, Serialize)]
 pub struct MetaData {
     pub name: String,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Default, Deserialize, Serialize)]
 pub struct Spec {
     pub metrics: Vec<String>,
 }

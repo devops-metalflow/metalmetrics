@@ -1,11 +1,12 @@
+use crate::config::config::Config;
 use std::error::Error;
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct Metrics {}
 
 impl Metrics {
-    pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn routine(_cfg: Config, _spec: Option<&str>) -> Result<String, Box<dyn Error>> {
         // TODO
-        Ok(())
+        Ok("".to_string())
     }
 }

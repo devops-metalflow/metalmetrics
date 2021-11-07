@@ -33,29 +33,26 @@ async fn main() {
         process::exit(-2);
     }
 
-    let mut m = Metrics {
-        ..Default::default()
-    };
-
-    if let Err(err) = m.run() {
-        println!("failed to run metrics: {}", err);
-        process::exit(-3);
-    }
-
     println!("metrics running");
 
     if c.listen_url.len() != 0 {
         let f = Flow {
             config: c,
-            ..Default::default()
+            routine: Metrics::routine,
         };
 
         if let Err(err) = f.run().await {
             println!("failed to run flow: {}", err);
-            process::exit(-4);
+            process::exit(-3);
         }
     } else {
-        // TODO
+        match Metrics::routine(c, None) {
+            Ok(buf) => println!("{}", buf),
+            Err(err) => {
+                println!("failed to run metrics: {}", err);
+                process::exit(-4);
+            }
+        }
     }
 
     println!("metrics exiting");

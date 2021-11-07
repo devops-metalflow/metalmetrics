@@ -2,7 +2,7 @@
 
 [package]
 name = "metalmetrics-rs"
-version = "0.0.6"
+version = "0.0.7"
 edition = "2021"
 authors = ["Jia Jia <angersax@sina.com>"]
 include = [
