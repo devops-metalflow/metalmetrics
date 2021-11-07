@@ -95,12 +95,8 @@ Project License can be found [here](LICENSE).
 
 ## Reference
 
-- [cargo-build](https://doc.rust-lang.org/cargo/commands/cargo-build.html)
-- [gRPC](https://grpc.io/docs/languages/python/)
 - [health-check-script](https://github.com/SimplyLinuxFAQ/health-check-script)
 - [inxi](https://github.com/smxi/inxi)
-- [python-diamond](https://github.com/python-diamond/Diamond)
-- [rust-cheats](https://cheats.rs/)
-- [rust-setup](https://docs.microsoft.com/en-us/windows/dev-environment/rust/setup)
+- [rust-grpc](https://gist.github.com/craftslab/c1b0e5c7f670d6f42a3623d04fddf8c1)
 - [sysperf](https://github.com/iandk/sysperf)
 - [sysstat](https://github.com/sysstat/sysstat)
