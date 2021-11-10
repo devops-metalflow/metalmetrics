@@ -96,7 +96,9 @@ Project License can be found [here](LICENSE).
 ## Reference
 
 - [health-check-script](https://github.com/SimplyLinuxFAQ/health-check-script)
+- [heim](https://github.com/heim-rs/heim)
 - [inxi](https://github.com/smxi/inxi)
 - [rust-grpc](https://gist.github.com/craftslab/c1b0e5c7f670d6f42a3623d04fddf8c1)
+- [rust-psutil](https://github.com/rust-psutil/rust-psutil)
 - [sysperf](https://github.com/iandk/sysperf)
 - [sysstat](https://github.com/sysstat/sysstat)
