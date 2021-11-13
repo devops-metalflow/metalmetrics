@@ -1,8 +1,9 @@
 use crate::config::config::Config;
 use futures::StreamExt;
-use heim::{cpu, disk, host, net, units};
+use heim::{cpu, disk, host, memory, net, units};
 use std::error::Error;
 use std::path::Path;
+use std::process::Command;
 
 pub struct Metrics {}
 
@@ -19,9 +20,9 @@ impl Metrics {
             match cpu::physical_count().await {
                 Ok(buf) => match buf {
                     Some(b) => Ok(format!("{} CPU", b)),
-                    None => Err("failed to run cpu".into()),
+                    None => Err("invalid".into()),
                 },
-                Err(_) => Err("failed to run cpu".into()),
+                Err(_) => Err("invalid".into()),
             }
         })
     }
@@ -33,6 +34,7 @@ impl Metrics {
             let usage = disk::usage(Path::new("/")).await?;
             let total = usage.total().get::<units::information::gigabyte>();
             let used = usage.used().get::<units::information::gigabyte>();
+
             Ok(format!(
                 "{:.1} GB ({:.1} GB Used)",
                 total as f64, used as f64
@@ -44,12 +46,13 @@ impl Metrics {
         smol::block_on(async {
             let counters = disk::io_counters().await?;
             futures::pin_mut!(counters);
-            if let Ok(buf) = counters.next().await.ok_or("failed to run io")? {
+
+            if let Ok(buf) = counters.next().await.ok_or("invalid")? {
                 let read = buf.read_bytes().get::<units::information::kilobyte>();
                 let write = buf.write_bytes().get::<units::information::kilobyte>();
                 Ok(format!("RD {} KB WR {} KB", read, write))
             } else {
-                Err("failed to run io".into())
+                Err("invalid".into())
             }
         })
     }
@@ -76,22 +79,56 @@ impl Metrics {
 
     pub fn os() -> Result<String, Box<dyn Error>> {
         // awk -F'[= "]' '/PRETTY_NAME/{print $3,$4,$5}' /etc/os-release
-        Ok("".to_string())
+        let output = Command::new("awk")
+            .arg("-F[= \"]")
+            .arg("/PRETTY_NAME/{print $3,$4,$5}")
+            .arg("/etc/os-release")
+            .output()?;
+        if !output.status.success() {
+            return Err("invalid".into());
+        }
+
+        Ok(format!("{:?}", String::from_utf8(output.stdout)))
     }
 
     pub fn ram() -> Result<String, Box<dyn Error>> {
         // free -m | awk '/Mem/ {print $2}'
         // free -m | awk '/Mem/ {print $3}'
-        Ok("".to_string())
+        smol::block_on(async {
+            match memory::memory().await {
+                Ok(buf) => {
+                    let total = buf.total().get::<units::information::megabyte>();
+                    let free = buf.free().get::<units::information::megabyte>();
+                    Ok(format!("{} MB ({} MB Used)", total, (total - free)))
+                }
+                Err(_) => Err("invalid".into()),
+            }
+        })
     }
 
-    pub fn system() -> Result<String, Box<dyn Error>> {
+    pub fn system(name: String) -> Result<String, Box<dyn Error>> {
         // perl ./inxi -F
-        Ok("".to_string())
+        let output = Command::new("perl").arg(name).arg("-F").output()?;
+        if !output.status.success() {
+            return Err("invalid".into());
+        }
+
+        Ok(format!("{:?}", String::from_utf8(output.stdout)))
     }
 
     pub fn users() -> Result<String, Box<dyn Error>> {
         // getent passwd {1000..60000}
-        Ok("".to_string())
+        smol::block_on(async {
+            let mut buf: Vec<String> = vec![];
+            let users = host::users().await?;
+            futures::pin_mut!(users);
+
+            while let Some(item) = users.next().await {
+                let item = item?;
+                buf.push(item.username().to_string());
+            }
+
+            Ok(format!("{}", buf.join("\n")))
+        })
     }
 }

@@ -104,7 +104,7 @@ fn test_ram() {
 
 #[test]
 fn test_system() {
-    match super::metrics::Metrics::system() {
+    match super::metrics::Metrics::system("./inxi".to_string()) {
         Ok(buf) => {
             println!("{}", buf);
             assert!(buf.len() != 0);
