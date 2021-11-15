@@ -15,15 +15,9 @@ impl Metrics {
 
     pub fn cpu() -> Result<String, Box<dyn Error>> {
         // awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo
-        // df -hPl | grep -wvE '\\-|none|tmpfs|devtmpfs|by-uuid|chroot|Filesystem|udev|docker' | awk '{print $3}'
         smol::block_on(async {
-            match cpu::physical_count().await {
-                Ok(buf) => match buf {
-                    Some(b) => Ok(format!("{} CPU", b)),
-                    None => Err("invalid".into()),
-                },
-                Err(_) => Err("invalid".into()),
-            }
+            let count = cpu::logical_count().await?;
+            Ok(format!("{} CPU", count))
         })
     }
 
@@ -49,35 +43,52 @@ impl Metrics {
             return Err("invalid".into());
         }
 
-        Ok(format!("{:?}", String::from_utf8(output.stdout)))
+        match String::from_utf8(output.stdout) {
+            Ok(buf) => Ok(format!("{}", buf.trim())),
+            Err(_) => Err("invalid".into()),
+        }
     }
 
     pub fn io() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
+            let mut max: u64 = 0;
+            let mut read: u64 = 0;
+            let mut write: u64 = 0;
             let counters = disk::io_counters().await?;
             futures::pin_mut!(counters);
 
-            if let Ok(buf) = counters.next().await.ok_or("invalid")? {
-                let read = buf.read_bytes().get::<units::information::kilobyte>();
-                let write = buf.write_bytes().get::<units::information::kilobyte>();
-                Ok(format!("RD {} KB WR {} KB", read, write))
-            } else {
-                Err("invalid".into())
+            while let Some(item) = counters.next().await {
+                let item = item?;
+                let r = item.read_bytes().get::<units::information::kilobyte>();
+                let w = item.write_bytes().get::<units::information::kilobyte>();
+                if r > max {
+                    max = r;
+                    read = r;
+                    write = w;
+                }
             }
+
+            Ok(format!("RD {} KB WR {} KB", read, write))
         })
     }
 
     pub fn ip() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
+            let mut buf: Vec<String> = vec![];
             let nic = net::nic().await?;
             futures::pin_mut!(nic);
 
-            if let Ok(buf) = nic.next().await.ok_or("invalid")? {
-                let addr = buf.address();
-                Ok(format!("{:?}", addr))
-            } else {
-                Err("invalid".into())
+            while let Some(item) = nic.next().await {
+                let item = item?;
+                if !item.is_loopback() && item.is_up() {
+                    match item.address() {
+                        net::Address::Inet(addr) => buf.push(addr.ip().to_string()),
+                        _ => {}
+                    };
+                }
             }
+
+            Ok(format!("{}", buf.join("\n")))
         })
     }
 
@@ -91,30 +102,49 @@ impl Metrics {
 
     pub fn mac() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
+            let helper = |address| match address {
+                net::MacAddr::V6(buf) => buf.to_string(),
+                _ => "".to_string(),
+            };
+
+            let mut buf: Vec<String> = vec![];
             let nic = net::nic().await?;
             futures::pin_mut!(nic);
 
-            if let Ok(buf) = nic.next().await.ok_or("invalid")? {
-                let addr = buf.address();
-                Ok(format!("{:?}", addr))
-            } else {
-                Err("invalid".into())
+            while let Some(item) = nic.next().await {
+                let item = item?;
+                if !item.is_loopback() && item.is_up() {
+                    match item.address() {
+                        net::Address::Link(addr) => buf.push(helper(addr)),
+                        _ => {}
+                    };
+                }
             }
+
+            Ok(format!("{}", buf.join("\n")))
         })
     }
 
     pub fn network() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
+            let mut max: u64 = 0;
+            let mut recv: u64 = 0;
+            let mut sent: u64 = 0;
             let counters = net::io_counters().await?;
             futures::pin_mut!(counters);
 
-            if let Ok(buf) = counters.next().await.ok_or("invalid")? {
-                let sent = buf.packets_sent();
-                let recv = buf.packets_recv();
-                Ok(format!("RX packets {} TX packets {}", recv, sent))
-            } else {
-                Err("invalid".into())
+            while let Some(item) = counters.next().await {
+                let item = item?;
+                let r = item.packets_recv();
+                let s = item.packets_sent();
+                if r > max {
+                    max = r;
+                    recv = r;
+                    sent = s;
+                }
             }
+
+            Ok(format!("RX packets {} TX packets {}", recv, sent))
         })
     }
 
@@ -129,7 +159,10 @@ impl Metrics {
             return Err("invalid".into());
         }
 
-        Ok(format!("{:?}", String::from_utf8(output.stdout)))
+        match String::from_utf8(output.stdout) {
+            Ok(buf) => Ok(format!("{}", buf)),
+            Err(_) => Err("invalid".into()),
+        }
     }
 
     pub fn ram() -> Result<String, Box<dyn Error>> {
@@ -138,9 +171,9 @@ impl Metrics {
         smol::block_on(async {
             match memory::memory().await {
                 Ok(buf) => {
-                    let total = buf.total().get::<units::information::megabyte>();
-                    let free = buf.free().get::<units::information::megabyte>();
-                    Ok(format!("{} MB ({} MB Used)", total, (total - free)))
+                    let total = buf.total().get::<units::information::gigabyte>();
+                    let available = buf.available().get::<units::information::gigabyte>();
+                    Ok(format!("{} GB ({} GB Used)", total, (total - available)))
                 }
                 Err(_) => Err("invalid".into()),
             }
