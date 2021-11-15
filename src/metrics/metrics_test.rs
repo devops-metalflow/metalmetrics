@@ -26,17 +26,6 @@ fn test_disk() {
 }
 
 #[test]
-fn test_inxi() {
-    match super::metrics::Metrics::inxi() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
-        Err(_) => assert!(false),
-    }
-}
-
-#[test]
 fn test_io() {
     match super::metrics::Metrics::io() {
         Ok(buf) => {

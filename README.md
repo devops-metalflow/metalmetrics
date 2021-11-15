@@ -23,7 +23,7 @@
 - **Local mode**
 
 ```bash
-./metalmetrics-rs --config-file="config.yml" --inxi-file="inxi" --output-file="output.json"
+./metalmetrics-rs --config-file="config.yml" --output-file="output.json"
 ```
 
 
@@ -31,7 +31,7 @@
 - **Service mode**
 
 ```bash
-./metalmetrics-rs --config-file="config.yml" --inxi-file="inxi" --listen-url="127.0.0.1:9090"
+./metalmetrics-rs --config-file="config.yml" --listen-url="127.0.0.1:9090"
 ```
 
 
@@ -45,7 +45,6 @@ USAGE:
 OPTIONS:
     -c, --config-file <NAME>    config file (.yml)
     -h, --help                  Print help information
-    -i, --inxi-file <NAME>      inxi file (/path/to/inxi)
     -l, --listen-url <URL>      listen url (host:port)
     -o, --output-file <NAME>    output file (.json|.txt|.xlsx)
     -V, --version               Print version information
@@ -68,7 +67,6 @@ spec:
   metrics:
     - cpu
     - disk
-    - inxi
     - io
     - ip
     - kernel

@@ -8,7 +8,6 @@ use std::path::Path;
 pub struct Config {
     pub config_data: ConfigData,
     pub config_file: String,
-    pub inxi_file: String,
     pub listen_url: String,
     pub output_file: String,
 }
@@ -35,7 +34,6 @@ pub struct Spec {
 impl Config {
     pub fn build(&mut self) -> Result<(), Box<dyn Error>> {
         self.config()?;
-        self.inxi()?;
         self.listen()?;
         self.output()?;
 
@@ -57,16 +55,6 @@ impl Config {
 
         let f = File::open(&self.config_file)?;
         self.config_data = serde_yaml::from_reader(f)?;
-
-        Ok(())
-    }
-
-    pub fn inxi(&mut self) -> Result<(), Box<dyn Error>> {
-        if self.inxi_file.len() != 0 {
-            if !Path::new(&self.inxi_file).exists() {
-                return Err(format!("{} not found", self.inxi_file).into());
-            }
-        }
 
         Ok(())
     }

@@ -22,7 +22,6 @@ async fn main() {
 
     let mut c = Config {
         config_file: a.config_file,
-        inxi_file: a.inxi_file,
         listen_url: a.listen_url,
         output_file: a.output_file,
         ..Default::default()

@@ -36,19 +36,6 @@ impl Metrics {
         })
     }
 
-    pub fn inxi() -> Result<String, Box<dyn Error>> {
-        // inxi -F
-        let output = Command::new("inxi").arg("-F").output()?;
-        if !output.status.success() {
-            return Err("invalid".into());
-        }
-
-        match String::from_utf8(output.stdout) {
-            Ok(buf) => Ok(format!("{}", buf.trim())),
-            Err(_) => Err("invalid".into()),
-        }
-    }
-
     pub fn io() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
             let mut max: u64 = 0;

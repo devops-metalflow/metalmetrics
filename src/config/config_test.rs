@@ -35,23 +35,6 @@ fn test_config() {
 }
 
 #[test]
-fn test_inxi() {
-    let mut cfg = super::config::Config {
-        inxi_file: "".to_string(),
-        ..Default::default()
-    };
-
-    assert!(cfg.inxi().is_ok());
-
-    let mut cfg = super::config::Config {
-        inxi_file: "foo".to_string(),
-        ..Default::default()
-    };
-
-    assert!(cfg.inxi().is_err());
-}
-
-#[test]
 fn test_listen() {
     let mut cfg = super::config::Config {
         listen_url: "".to_string(),

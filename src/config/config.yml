@@ -6,7 +6,6 @@ spec:
   metrics:
     - cpu
     - disk
-    - inxi
     - io
     - ip
     - kernel

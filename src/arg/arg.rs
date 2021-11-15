@@ -4,7 +4,6 @@ use std::error::Error;
 #[derive(Clone, Default)]
 pub struct Argument {
     pub config_file: String,
-    pub inxi_file: String,
     pub listen_url: String,
     pub output_file: String,
 }
@@ -21,15 +20,6 @@ impl Argument {
                     .about("config file (.yml)")
                     .takes_value(true)
                     .required(true),
-            )
-            .arg(
-                Arg::new("inxi_file")
-                    .short('i')
-                    .long("inxi-file")
-                    .value_name("NAME")
-                    .about("inxi file (/path/to/inxi)")
-                    .takes_value(true)
-                    .required(false),
             )
             .arg(
                 Arg::new("listen_url")
@@ -55,11 +45,6 @@ impl Argument {
         match matches.value_of("config_file") {
             Some(name) => self.config_file = name.to_string(),
             None => self.config_file = "".to_string(),
-        }
-
-        match matches.value_of("inxi_file") {
-            Some(name) => self.inxi_file = name.to_string(),
-            None => self.inxi_file = "".to_string(),
         }
 
         match matches.value_of("listen_url") {
