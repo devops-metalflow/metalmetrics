@@ -68,6 +68,7 @@ spec:
   metrics:
     - cpu
     - disk
+    - inxi
     - io
     - ip
     - kernel
@@ -75,7 +76,6 @@ spec:
     - network
     - os
     - ram
-    - system
     - users
 ```
 

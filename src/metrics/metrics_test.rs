@@ -26,6 +26,17 @@ fn test_disk() {
 }
 
 #[test]
+fn test_inxi() {
+    match super::metrics::Metrics::inxi() {
+        Ok(buf) => {
+            println!("{}", buf);
+            assert!(buf.len() != 0);
+        }
+        Err(_) => assert!(false),
+    }
+}
+
+#[test]
 fn test_io() {
     match super::metrics::Metrics::io() {
         Ok(buf) => {
@@ -94,17 +105,6 @@ fn test_os() {
 #[test]
 fn test_ram() {
     match super::metrics::Metrics::ram() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
-        Err(_) => assert!(false),
-    }
-}
-
-#[test]
-fn test_system() {
-    match super::metrics::Metrics::system("./inxi".to_string()) {
         Ok(buf) => {
             println!("{}", buf);
             assert!(buf.len() != 0);

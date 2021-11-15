@@ -42,6 +42,16 @@ impl Metrics {
         })
     }
 
+    pub fn inxi() -> Result<String, Box<dyn Error>> {
+        // inxi -F
+        let output = Command::new("inxi").arg("-F").output()?;
+        if !output.status.success() {
+            return Err("invalid".into());
+        }
+
+        Ok(format!("{:?}", String::from_utf8(output.stdout)))
+    }
+
     pub fn io() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
             let counters = disk::io_counters().await?;
@@ -58,7 +68,17 @@ impl Metrics {
     }
 
     pub fn ip() -> Result<String, Box<dyn Error>> {
-        Ok("".to_string())
+        smol::block_on(async {
+            let nic = net::nic().await?;
+            futures::pin_mut!(nic);
+
+            if let Ok(buf) = nic.next().await.ok_or("invalid")? {
+                let addr = buf.address();
+                Ok(format!("{:?}", addr))
+            } else {
+                Err("invalid".into())
+            }
+        })
     }
 
     pub fn kernel() -> Result<String, Box<dyn Error>> {
@@ -70,11 +90,32 @@ impl Metrics {
     }
 
     pub fn mac() -> Result<String, Box<dyn Error>> {
-        Ok("".to_string())
+        smol::block_on(async {
+            let nic = net::nic().await?;
+            futures::pin_mut!(nic);
+
+            if let Ok(buf) = nic.next().await.ok_or("invalid")? {
+                let addr = buf.address();
+                Ok(format!("{:?}", addr))
+            } else {
+                Err("invalid".into())
+            }
+        })
     }
 
     pub fn network() -> Result<String, Box<dyn Error>> {
-        Ok("".to_string())
+        smol::block_on(async {
+            let counters = net::io_counters().await?;
+            futures::pin_mut!(counters);
+
+            if let Ok(buf) = counters.next().await.ok_or("invalid")? {
+                let sent = buf.packets_sent();
+                let recv = buf.packets_recv();
+                Ok(format!("RX packets {} TX packets {}", recv, sent))
+            } else {
+                Err("invalid".into())
+            }
+        })
     }
 
     pub fn os() -> Result<String, Box<dyn Error>> {
@@ -104,16 +145,6 @@ impl Metrics {
                 Err(_) => Err("invalid".into()),
             }
         })
-    }
-
-    pub fn system(name: String) -> Result<String, Box<dyn Error>> {
-        // perl ./inxi -F
-        let output = Command::new("perl").arg(name).arg("-F").output()?;
-        if !output.status.success() {
-            return Err("invalid".into());
-        }
-
-        Ok(format!("{:?}", String::from_utf8(output.stdout)))
     }
 
     pub fn users() -> Result<String, Box<dyn Error>> {

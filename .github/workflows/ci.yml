@@ -37,6 +37,8 @@ jobs:
       - name: Install
         run: |
           rustup update --no-self-update stable
+          sudo apt-get update
+          sudo apt-get install -y inxi
       - name: Run
         run: make test
         continue-on-error: false
