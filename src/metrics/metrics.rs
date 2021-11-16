@@ -89,7 +89,7 @@ impl Metrics {
 
     pub fn mac() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
-            let helper = |address| match address {
+            let helper = |data| match data {
                 net::MacAddr::V6(buf) => buf.to_string(),
                 _ => "".to_string(),
             };
@@ -169,17 +169,26 @@ impl Metrics {
 
     pub fn users() -> Result<String, Box<dyn Error>> {
         // getent passwd {1000..60000}
-        smol::block_on(async {
+        let helper = |mut data: std::str::Lines| {
             let mut buf: Vec<String> = vec![];
-            let users = host::users().await?;
-            futures::pin_mut!(users);
-
-            while let Some(item) = users.next().await {
-                let item = item?;
-                buf.push(item.username().to_string());
+            while let Some(item) = data.next() {
+                let collect: Vec<&str> = item.split(":").collect();
+                let val = collect[2].parse::<i32>().unwrap();
+                if val >= 1000 && val <= 60000 {
+                    buf.push(collect[0].to_string());
+                }
             }
+            format!("{}", buf.join("\n"))
+        };
 
-            Ok(format!("{}", buf.join("\n")))
-        })
+        let output = Command::new("getent").arg("passwd").output()?;
+        if !output.status.success() {
+            return Err("invalid".into());
+        }
+
+        match String::from_utf8(output.stdout) {
+            Ok(buf) => Ok(helper(buf.lines())),
+            Err(_) => Err("invalid".into()),
+        }
     }
 }
