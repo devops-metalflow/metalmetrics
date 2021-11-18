@@ -10,7 +10,7 @@ pub mod flow {
 
 pub struct Flow {
     pub config: Config,
-    pub routine: fn(Config, Option<&str>) -> Result<String, Box<dyn Error>>,
+    pub routine: fn(Config, &str) -> Result<String, Box<dyn Error>>,
 }
 
 impl Flow {
@@ -32,7 +32,7 @@ impl Flow {
 
 pub struct FlowServer {
     pub config: Config,
-    pub routine: fn(Config, Option<&str>) -> Result<String, Box<dyn Error>>,
+    pub routine: fn(Config, &str) -> Result<String, Box<dyn Error>>,
 }
 
 #[tonic::async_trait]
@@ -42,7 +42,7 @@ impl FlowProto for FlowServer {
         request: Request<FlowRequest>,
     ) -> Result<Response<FlowReply>, Status> {
         let msg: String;
-        match (self.routine)(self.config.clone(), Some(&request.into_inner().message)) {
+        match (self.routine)(self.config.clone(), &request.into_inner().message) {
             Ok(buf) => msg = buf,
             Err(_) => msg = "".to_string(),
         }

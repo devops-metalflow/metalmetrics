@@ -1,4 +1,4 @@
-use crate::config::config::Config;
+use crate::config::config::{Config, PREFIX, SEP};
 use futures::StreamExt;
 use heim::{cpu, disk, host, memory, net, units};
 use std::error::Error;
@@ -8,8 +8,25 @@ use std::process::Command;
 pub struct Metrics {}
 
 impl Metrics {
-    pub fn routine(_cfg: Config, _spec: Option<&str>) -> Result<String, Box<dyn Error>> {
-        // TODO
+    pub fn routine(cfg: Config, spec: &str) -> Result<String, Box<dyn Error>> {
+        if spec.len() == 0 || !spec.starts_with(PREFIX) {
+            return Err("spec invalid".into());
+        }
+
+        let mut s: Vec<String> = vec![];
+        if spec == PREFIX {
+            s = cfg.config_data.spec.metrics;
+        } else {
+            let mut b = String::from(PREFIX);
+            b.push_str(SEP);
+            let b = spec.trim_start_matches(&b);
+            s.push(b.to_string());
+        }
+
+        for item in &s {
+            // TODO
+        }
+
         Ok("".to_string())
     }
 

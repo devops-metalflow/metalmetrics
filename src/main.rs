@@ -4,7 +4,7 @@ mod flow;
 mod metrics;
 
 use arg::arg::Argument;
-use config::config::Config;
+use config::config::{Config, PREFIX};
 use flow::flow::Flow;
 use metrics::metrics::Metrics;
 use std::process;
@@ -45,7 +45,7 @@ async fn main() {
             process::exit(-3);
         }
     } else {
-        match Metrics::routine(c, None) {
+        match Metrics::routine(c, PREFIX) {
             Ok(buf) => println!("{}", buf),
             Err(err) => {
                 println!("failed to run metrics: {}", err);
