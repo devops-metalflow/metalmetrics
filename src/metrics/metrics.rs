@@ -191,7 +191,7 @@ impl Metrics {
         }
 
         match String::from_utf8(output.stdout) {
-            Ok(buf) => Ok(format!("{}", buf)),
+            Ok(buf) => Ok(format!("{}", buf.trim())),
             Err(_) => Err("invalid".into()),
         }
     }
