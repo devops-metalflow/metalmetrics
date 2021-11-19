@@ -2,11 +2,13 @@ mod arg;
 mod config;
 mod flow;
 mod metrics;
+mod printer;
 
 use arg::arg::Argument;
 use config::config::{Config, PREFIX};
 use flow::flow::Flow;
 use metrics::metrics::Metrics;
+use printer::printer::Printer;
 use std::process;
 
 #[tokio::main]
@@ -36,7 +38,7 @@ async fn main() {
 
     if c.listen_url.len() != 0 {
         let f = Flow {
-            config: c,
+            config: c.clone(),
             routine: Metrics::routine,
         };
 
@@ -45,11 +47,22 @@ async fn main() {
             process::exit(-3);
         }
     } else {
-        match Metrics::routine(c, PREFIX) {
-            Ok(buf) => println!("{}", buf),
+        match Metrics::routine(c.clone(), PREFIX) {
+            Ok(buf) => {
+                if c.output_file.len() != 0 {
+                    let p = Printer { config: c.clone() };
+
+                    if let Err(err) = p.run(buf) {
+                        println!("failed to run printer: {}", err);
+                        process::exit(-4);
+                    }
+                } else {
+                    println!("{}", buf)
+                }
+            }
             Err(err) => {
                 println!("failed to run metrics: {}", err);
-                process::exit(-4);
+                process::exit(-5);
             }
         }
     }

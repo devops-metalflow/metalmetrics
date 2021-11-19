@@ -46,7 +46,7 @@ OPTIONS:
     -c, --config-file <NAME>    config file (.yml)
     -h, --help                  Print help information
     -l, --listen-url <URL>      listen url (host:port)
-    -o, --output-file <NAME>    output file (.json|.txt|.xlsx)
+    -o, --output-file <NAME>    output file (.json|.txt)
     -V, --version               Print version information
 ```
 

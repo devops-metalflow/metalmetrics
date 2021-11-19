@@ -1,5 +1,5 @@
 use serde_derive::{Deserialize, Serialize};
-use serde_yaml::{self};
+use serde_yaml;
 use std::error::Error;
 use std::fs::File;
 use std::path::Path;
@@ -70,10 +70,7 @@ impl Config {
 
     pub fn output(&mut self) -> Result<(), Box<dyn Error>> {
         if self.output_file.len() != 0 {
-            if !self.output_file.ends_with(".json")
-                && !self.output_file.ends_with(".txt")
-                && !self.output_file.ends_with(".xlsx")
-            {
+            if !self.output_file.ends_with(".json") && !self.output_file.ends_with(".txt") {
                 return Err("suffix invalid".into());
             }
 

@@ -35,7 +35,7 @@ impl Argument {
                     .short('o')
                     .long("output-file")
                     .value_name("NAME")
-                    .about("output file (.json|.txt|.xlsx)")
+                    .about("output file (.json|.txt)")
                     .takes_value(true)
                     .required(false)
                     .conflicts_with("listen_url"),
