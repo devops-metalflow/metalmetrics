@@ -4,6 +4,7 @@ use std::error::Error;
 use std::fs::File;
 use std::path::Path;
 
+pub const NAME: &'static str = "metrics";
 pub const PREFIX: &'static str = "metalmetrics/metrics";
 pub const SEP: &'static str = "/";
 

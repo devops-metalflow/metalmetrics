@@ -1,6 +1,7 @@
-use crate::config::config::{Config, PREFIX, SEP};
+use crate::config::config::{Config, NAME, PREFIX, SEP};
 use futures::StreamExt;
 use heim::{cpu, disk, host, memory, net, units};
+use std::collections::HashMap;
 use std::error::Error;
 use std::path::Path;
 use std::process::Command;
@@ -9,11 +10,26 @@ pub struct Metrics {}
 
 impl Metrics {
     pub fn routine(cfg: Config, spec: &str) -> Result<String, Box<dyn Error>> {
+        let helper = |spec| match spec {
+            "cpu" => Metrics::cpu(),
+            "disk" => Metrics::disk(),
+            "io" => Metrics::io(),
+            "ip" => Metrics::ip(),
+            "kernel" => Metrics::kernel(),
+            "mac" => Metrics::mac(),
+            "network" => Metrics::network(),
+            "os" => Metrics::os(),
+            "ram" => Metrics::ram(),
+            "users" => Metrics::users(),
+            &_ => Err("spec invalid".into()),
+        };
+
         if spec.len() == 0 || !spec.starts_with(PREFIX) {
             return Err("spec invalid".into());
         }
 
         let mut s: Vec<String> = vec![];
+
         if spec == PREFIX {
             s = cfg.config_data.spec.metrics;
         } else {
@@ -23,11 +39,22 @@ impl Metrics {
             s.push(b.to_string());
         }
 
+        let mut tuples: Vec<(String, String)> = Vec::new();
+
         for item in &s {
-            // TODO
+            let m = helper(item)?;
+            tuples.push((item.to_string(), m))
         }
 
-        Ok("".to_string())
+        let t: HashMap<_, _> = tuples.into_iter().collect();
+
+        let mut buf: HashMap<_, _> = HashMap::new();
+        let mut b: Vec<HashMap<_, _>> = Vec::new();
+
+        b.push(t);
+        buf.insert(NAME.to_string(), b);
+
+        Ok(format!("{:?}", buf))
     }
 
     pub fn cpu() -> Result<String, Box<dyn Error>> {

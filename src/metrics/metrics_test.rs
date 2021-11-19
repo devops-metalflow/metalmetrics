@@ -1,15 +1,59 @@
+#[allow(unused_imports)]
+use crate::config::config::{Config, PREFIX, SEP};
+
 #[test]
 fn test_routine() {
-    // TODO
+    let helper = || {
+        let n = std::path::Path::new(&std::env::current_dir().unwrap())
+            .join("src")
+            .join("config")
+            .join("config.yml");
+        let mut c = Config {
+            config_file: n.into_os_string().into_string().unwrap(),
+            listen_url: "".to_string(),
+            output_file: "".to_string(),
+            ..Default::default()
+        };
+        match c.build() {
+            Ok(_) => {}
+            Err(_) => {}
+        };
+        c
+    };
+
+    if let Err(_) = super::metrics::Metrics::routine(helper(), "") {
+        assert!(true);
+    }
+
+    if let Err(_) = super::metrics::Metrics::routine(helper(), "invalid") {
+        assert!(true);
+    }
+
+    match super::metrics::Metrics::routine(helper(), PREFIX) {
+        Ok(buf) => {
+            println!("{}", buf);
+            assert!(buf.len() != 0);
+        }
+        Err(_) => assert!(false),
+    }
+
+    let mut spec = PREFIX.to_string();
+    spec += SEP;
+    spec += "cpu";
+
+    match super::metrics::Metrics::routine(helper(), &spec) {
+        Ok(buf) => {
+            println!("{}", buf);
+            assert!(buf.len() != 0);
+        }
+        Err(_) => assert!(false),
+    }
 }
 
 #[test]
 fn test_cpu() {
     match super::metrics::Metrics::cpu() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -17,10 +61,7 @@ fn test_cpu() {
 #[test]
 fn test_disk() {
     match super::metrics::Metrics::disk() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -28,10 +69,7 @@ fn test_disk() {
 #[test]
 fn test_io() {
     match super::metrics::Metrics::io() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -39,10 +77,7 @@ fn test_io() {
 #[test]
 fn test_ip() {
     match super::metrics::Metrics::ip() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -50,10 +85,7 @@ fn test_ip() {
 #[test]
 fn test_kernel() {
     match super::metrics::Metrics::kernel() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -61,10 +93,7 @@ fn test_kernel() {
 #[test]
 fn test_mac() {
     match super::metrics::Metrics::mac() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -72,10 +101,7 @@ fn test_mac() {
 #[test]
 fn test_network() {
     match super::metrics::Metrics::network() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -83,10 +109,7 @@ fn test_network() {
 #[test]
 fn test_os() {
     match super::metrics::Metrics::os() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -94,10 +117,7 @@ fn test_os() {
 #[test]
 fn test_ram() {
     match super::metrics::Metrics::ram() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
@@ -105,10 +125,7 @@ fn test_ram() {
 #[test]
 fn test_users() {
     match super::metrics::Metrics::users() {
-        Ok(buf) => {
-            println!("{}", buf);
-            assert!(buf.len() != 0);
-        }
+        Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
 }
