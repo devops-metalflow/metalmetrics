@@ -1,5 +1,4 @@
 use crate::config::config::Config;
-use serde_derive::Deserialize;
 use serde_json;
 use std::collections::HashMap;
 use std::error::Error;
@@ -7,11 +6,6 @@ use std::fs;
 
 pub struct Printer {
     pub config: Config,
-}
-
-#[derive(Deserialize)]
-struct PrinterData {
-    data: HashMap<String, Vec<HashMap<String, String>>>,
 }
 
 impl Printer {
@@ -30,15 +24,34 @@ impl Printer {
     }
 
     pub fn json(&self, name: String, data: String) -> Result<(), Box<dyn Error>> {
-        fs::write(name, data)?;
+        let mut buf = String::new();
+
+        buf.push_str(&data);
+        buf.push('\n');
+
+        fs::write(name, buf)?;
+
         Ok(())
     }
 
     pub fn txt(&self, name: String, data: String) -> Result<(), Box<dyn Error>> {
-        let v: PrinterData = serde_json::from_str(&data)?;
-        let buf = String::new();
+        let helper = |data| {
+            let mut buf = String::new();
+            for (key, val) in data {
+                buf.push_str(&format!("{}: {}", key, val));
+                buf.push('\n');
+            }
+            buf
+        };
 
-        println!("{:?}", v.data);
+        let v: HashMap<String, Vec<HashMap<String, String>>> = serde_json::from_str(&data)?;
+        let mut buf = String::new();
+
+        for (key, val) in v {
+            buf.push_str(&key);
+            buf.push('\n');
+            buf.push_str(&helper(val[0].clone()));
+        }
 
         fs::write(name, buf)?;
 
