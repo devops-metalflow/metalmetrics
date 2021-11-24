@@ -20,6 +20,10 @@ license = "MIT"
 readme = "README.md"
 build = "src/flow/build.rs"
 
+[[bin]]
+name = "metalmetrics-rs"
+path = "src/main.rs"
+
 [dependencies]
 clap = "3.0.0-beta.4"
 futures = "0.3.17"
