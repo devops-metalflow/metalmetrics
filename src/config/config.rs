@@ -4,8 +4,10 @@ use std::error::Error;
 use std::fs::File;
 use std::path::Path;
 
+pub const METRICS: &'static str = "metalmetrics/metrics";
+pub const VERSION: &'static str = "metalmetrics/version";
+
 pub const NAME: &'static str = "metrics";
-pub const PREFIX: &'static str = "metalmetrics/metrics";
 pub const SEP: &'static str = "/";
 
 #[derive(Clone, Default)]

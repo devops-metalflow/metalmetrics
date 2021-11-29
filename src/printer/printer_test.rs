@@ -2,7 +2,7 @@
 use std::fs;
 
 #[allow(unused_imports)]
-use crate::config::config::{Config, PREFIX, SEP};
+use crate::config::config::{Config, METRICS, SEP};
 
 #[test]
 fn test_run() {

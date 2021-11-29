@@ -5,7 +5,7 @@ mod metrics;
 mod printer;
 
 use arg::arg::Argument;
-use config::config::{Config, PREFIX};
+use config::config::{Config, METRICS};
 use flow::flow::Flow;
 use metrics::metrics::Metrics;
 use printer::printer::Printer;
@@ -47,7 +47,7 @@ async fn main() {
             process::exit(-3);
         }
     } else {
-        match Metrics::routine(c.clone(), PREFIX) {
+        match Metrics::routine(c.clone(), METRICS) {
             Ok(buf) => {
                 if c.output_file.len() != 0 {
                     let p = Printer { config: c.clone() };

@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use crate::config::config::{Config, PREFIX, SEP};
+use crate::config::config::{Config, METRICS, SEP};
 
 #[test]
 fn test_routine() {
@@ -29,7 +29,7 @@ fn test_routine() {
         assert!(true);
     }
 
-    match super::metrics::Metrics::routine(helper(), PREFIX) {
+    match super::metrics::Metrics::routine(helper(), METRICS) {
         Ok(buf) => {
             println!("{}", buf);
             assert!(buf.len() != 0);
@@ -37,7 +37,7 @@ fn test_routine() {
         Err(_) => assert!(false),
     }
 
-    let mut spec = PREFIX.to_string();
+    let mut spec = METRICS.to_string();
     spec += SEP;
     spec += "cpu";
 

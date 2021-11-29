@@ -1,4 +1,4 @@
-use crate::config::config::{Config, NAME, PREFIX, SEP};
+use crate::config::config::{Config, METRICS, NAME, SEP};
 use futures::StreamExt;
 use heim::{cpu, disk, host, memory, net, units};
 use std::collections::HashMap;
@@ -24,16 +24,16 @@ impl Metrics {
             &_ => Err("spec invalid".into()),
         };
 
-        if spec.len() == 0 || !spec.starts_with(PREFIX) {
+        if spec.len() == 0 || !spec.starts_with(METRICS) {
             return Err("spec invalid".into());
         }
 
         let mut s: Vec<String> = vec![];
 
-        if spec == PREFIX {
+        if spec == METRICS {
             s = cfg.config_data.spec.metrics;
         } else {
-            let mut b = String::from(PREFIX);
+            let mut b = String::from(METRICS);
             b.push_str(SEP);
             let b = spec.trim_start_matches(&b);
             s.push(b.to_string());
