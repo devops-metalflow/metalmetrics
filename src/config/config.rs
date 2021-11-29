@@ -16,6 +16,7 @@ pub struct Config {
     pub config_file: String,
     pub listen_url: String,
     pub output_file: String,
+    pub version_info: String,
 }
 
 #[allow(non_snake_case)]
@@ -42,6 +43,7 @@ impl Config {
         self.config()?;
         self.listen()?;
         self.output()?;
+        self.version()?;
 
         Ok(())
     }
@@ -81,6 +83,11 @@ impl Config {
             }
         }
 
+        Ok(())
+    }
+
+    pub fn version(&mut self) -> Result<(), Box<dyn Error>> {
+        // PASS
         Ok(())
     }
 }

@@ -1,4 +1,4 @@
-use crate::config::config::Config;
+use crate::config::config::{Config, VERSION};
 use flow::flow_proto_server::{FlowProto, FlowProtoServer};
 use flow::{FlowReply, FlowRequest};
 use std::error::Error;
@@ -41,13 +41,19 @@ impl FlowProto for FlowServer {
         &self,
         request: Request<FlowRequest>,
     ) -> Result<Response<FlowReply>, Status> {
-        let msg: String;
-        match (self.routine)(self.config.clone(), &request.into_inner().message) {
-            Ok(buf) => msg = buf,
-            Err(_) => msg = "".to_string(),
+        let buf: String;
+        let msg = request.into_inner().message;
+
+        if msg == VERSION {
+            buf = self.config.version_info.clone();
+        } else {
+            match (self.routine)(self.config.clone(), &msg) {
+                Ok(b) => buf = b,
+                Err(_) => buf = "".to_string(),
+            }
         }
 
-        let reply = flow::FlowReply { message: msg };
+        let reply = flow::FlowReply { message: buf };
         Ok(Response::new(reply))
     }
 }

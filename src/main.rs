@@ -26,6 +26,7 @@ async fn main() {
         config_file: a.config_file,
         listen_url: a.listen_url,
         output_file: a.output_file,
+        version_info: a.version_info,
         ..Default::default()
     };
 
