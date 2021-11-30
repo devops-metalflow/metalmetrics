@@ -41,8 +41,8 @@ impl FlowProto for FlowServer {
         &self,
         request: Request<FlowRequest>,
     ) -> Result<Response<FlowReply>, Status> {
-        let buf: String;
         let msg = request.into_inner().message;
+        let buf: String;
 
         if msg == VERSION {
             buf = self.config.version_info.clone();
