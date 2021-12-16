@@ -43,10 +43,10 @@ USAGE:
     metalmetrics-rs [OPTIONS] --config-file <NAME>
 
 OPTIONS:
-    -c, --config-file <NAME>    config file (.yml)
+    -c, --config-file <NAME>    Config file (.yml)
     -h, --help                  Print help information
-    -l, --listen-url <URL>      listen url (host:port)
-    -o, --output-file <NAME>    output file (.json|.txt)
+    -l, --listen-url <URL>      Listen url (host:port)
+    -o, --output-file <NAME>    Output file (.json|.txt)
     -V, --version               Print version information
 ```
 

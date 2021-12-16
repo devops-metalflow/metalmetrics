@@ -21,7 +21,7 @@ impl Argument {
                     .short('c')
                     .long("config-file")
                     .value_name("NAME")
-                    .about("config file (.yml)")
+                    .help("Config file (.yml)")
                     .takes_value(true)
                     .required(true),
             )
@@ -30,7 +30,7 @@ impl Argument {
                     .short('l')
                     .long("listen-url")
                     .value_name("URL")
-                    .about("listen url (host:port)")
+                    .help("Listen url (host:port)")
                     .takes_value(true)
                     .required(false),
             )
@@ -39,7 +39,7 @@ impl Argument {
                     .short('o')
                     .long("output-file")
                     .value_name("NAME")
-                    .about("output file (.json|.txt)")
+                    .help("Output file (.json|.txt)")
                     .takes_value(true)
                     .required(false)
                     .conflicts_with("listen_url"),
