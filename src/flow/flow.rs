@@ -42,18 +42,30 @@ impl FlowProto for FlowServer {
         request: Request<FlowRequest>,
     ) -> Result<Response<FlowReply>, Status> {
         let buf = request.into_inner().message;
+
+        let err: String;
         let msg: String;
 
         if buf == VERSION {
             msg = self.config.version_info.clone();
+            err = "".to_string();
         } else {
             match (self.routine)(self.config.clone(), &buf) {
-                Ok(m) => msg = m,
-                Err(_) => msg = "".to_string(),
+                Ok(m) => {
+                    msg = m;
+                    err = "".to_string();
+                }
+                Err(e) => {
+                    msg = "".to_string();
+                    err = e.to_string();
+                }
             }
         }
 
-        let reply = flow::FlowReply { message: msg };
+        let reply = flow::FlowReply {
+            message: msg,
+            error: err,
+        };
         Ok(Response::new(reply))
     }
 }

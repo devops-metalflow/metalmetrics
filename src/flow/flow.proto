@@ -15,5 +15,6 @@ message FlowRequest {
 
 // The response message.
 message FlowReply {
-  string message = 1;
+  string error = 1;
+  string message = 2;
 }
