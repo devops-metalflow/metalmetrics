@@ -67,6 +67,12 @@ fn test_disk() {
 }
 
 #[test]
+fn test_extra() {
+    // PASS
+    assert!(true);
+}
+
+#[test]
 fn test_io() {
     match super::metrics::Metrics::io() {
         Ok(buf) => assert!(buf.len() != 0),

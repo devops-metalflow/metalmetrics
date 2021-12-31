@@ -3,6 +3,7 @@ use futures::StreamExt;
 use heim::{cpu, disk, host, memory, net, units};
 use std::collections::HashMap;
 use std::error::Error;
+use std::fs;
 use std::path::Path;
 use std::process::Command;
 
@@ -13,6 +14,7 @@ impl Metrics {
         let helper = |spec| match spec {
             "cpu" => Metrics::cpu(),
             "disk" => Metrics::disk(),
+            "extra" => Metrics::extra(),
             "io" => Metrics::io(),
             "ip" => Metrics::ip(),
             "kernel" => Metrics::kernel(),
@@ -78,6 +80,12 @@ impl Metrics {
                 total as f64, used as f64
             ))
         })
+    }
+
+    pub fn extra() -> Result<String, Box<dyn Error>> {
+        // cat /assets/assets/assets.ini
+        let contents = fs::read_to_string("/assets/assets/assets.ini")?;
+        Ok(format!("{}", contents))
     }
 
     pub fn io() -> Result<String, Box<dyn Error>> {

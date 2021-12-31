@@ -44,27 +44,27 @@ impl FlowProto for FlowServer {
         let buf = request.into_inner().message;
 
         let err: String;
-        let msg: String;
+        let out: String;
 
         if buf == VERSION {
-            msg = self.config.version_info.clone();
             err = "".to_string();
+            out = self.config.version_info.clone();
         } else {
             match (self.routine)(self.config.clone(), &buf) {
-                Ok(m) => {
-                    msg = m;
+                Ok(b) => {
                     err = "".to_string();
+                    out = b;
                 }
                 Err(e) => {
-                    msg = "".to_string();
                     err = e.to_string();
+                    out = "".to_string();
                 }
             }
         }
 
         let reply = flow::FlowReply {
-            message: msg,
             error: err,
+            output: out,
         };
         Ok(Response::new(reply))
     }
