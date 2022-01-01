@@ -51,6 +51,12 @@ fn test_routine() {
 }
 
 #[test]
+fn test_assets() {
+    // PASS
+    assert!(true);
+}
+
+#[test]
 fn test_cpu() {
     match super::metrics::Metrics::cpu() {
         Ok(buf) => assert!(buf.len() != 0),
@@ -64,12 +70,6 @@ fn test_disk() {
         Ok(buf) => assert!(buf.len() != 0),
         Err(_) => assert!(false),
     }
-}
-
-#[test]
-fn test_extra() {
-    // PASS
-    assert!(true);
 }
 
 #[test]

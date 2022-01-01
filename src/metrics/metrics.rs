@@ -12,9 +12,9 @@ pub struct Metrics {}
 impl Metrics {
     pub fn routine(cfg: Config, spec: &str) -> Result<String, Box<dyn Error>> {
         let helper = |spec| match spec {
+            "assets" => Metrics::assets(),
             "cpu" => Metrics::cpu(),
             "disk" => Metrics::disk(),
-            "extra" => Metrics::extra(),
             "io" => Metrics::io(),
             "ip" => Metrics::ip(),
             "kernel" => Metrics::kernel(),
@@ -59,6 +59,30 @@ impl Metrics {
         Ok(format!("{:?}", buf))
     }
 
+    pub fn assets() -> Result<String, Box<dyn Error>> {
+        // cat /assets/assets/assets.ini
+        let helper = |data: String| -> String {
+            match data.strip_prefix("assetsNo=") {
+                Some(b) => b.parse().unwrap(),
+                None => "".to_string(),
+            }
+        };
+
+        let contents = fs::read_to_string("/assets/assets/assets.ini")?;
+        let lines = contents.lines();
+
+        let mut buf = String::new();
+
+        for item in lines {
+            buf = helper(item.parse().unwrap());
+            if !buf.is_empty() {
+                break;
+            }
+        }
+
+        Ok(format!("{}", buf))
+    }
+
     pub fn cpu() -> Result<String, Box<dyn Error>> {
         // awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo
         smol::block_on(async {
@@ -80,12 +104,6 @@ impl Metrics {
                 total as f64, used as f64
             ))
         })
-    }
-
-    pub fn extra() -> Result<String, Box<dyn Error>> {
-        // cat /assets/assets/assets.ini
-        let contents = fs::read_to_string("/assets/assets/assets.ini")?;
-        Ok(format!("{}", contents))
     }
 
     pub fn io() -> Result<String, Box<dyn Error>> {
