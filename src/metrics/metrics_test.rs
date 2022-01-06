@@ -32,7 +32,7 @@ fn test_routine() {
     match super::metrics::Metrics::routine(helper(), METRICS) {
         Ok(buf) => {
             println!("{}", buf);
-            assert!(buf.len() != 0);
+            assert_ne!(buf.len(), 0);
         }
         Err(_) => assert!(false),
     }
@@ -44,7 +44,7 @@ fn test_routine() {
     match super::metrics::Metrics::routine(helper(), &spec) {
         Ok(buf) => {
             println!("{}", buf);
-            assert!(buf.len() != 0);
+            assert_ne!(buf.len(), 0);
         }
         Err(_) => assert!(false),
     }
@@ -52,14 +52,16 @@ fn test_routine() {
 
 #[test]
 fn test_assets() {
-    // PASS
-    assert!(true);
+    match super::metrics::Metrics::assets() {
+        Ok(_) => assert!(true),
+        Err(_) => assert!(false),
+    }
 }
 
 #[test]
 fn test_cpu() {
     match super::metrics::Metrics::cpu() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -67,7 +69,7 @@ fn test_cpu() {
 #[test]
 fn test_disk() {
     match super::metrics::Metrics::disk() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -75,7 +77,7 @@ fn test_disk() {
 #[test]
 fn test_io() {
     match super::metrics::Metrics::io() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -83,7 +85,7 @@ fn test_io() {
 #[test]
 fn test_ip() {
     match super::metrics::Metrics::ip() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -91,7 +93,7 @@ fn test_ip() {
 #[test]
 fn test_kernel() {
     match super::metrics::Metrics::kernel() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -99,7 +101,7 @@ fn test_kernel() {
 #[test]
 fn test_mac() {
     match super::metrics::Metrics::mac() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -107,7 +109,7 @@ fn test_mac() {
 #[test]
 fn test_network() {
     match super::metrics::Metrics::network() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -115,7 +117,7 @@ fn test_network() {
 #[test]
 fn test_os() {
     match super::metrics::Metrics::os() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -123,7 +125,7 @@ fn test_os() {
 #[test]
 fn test_ram() {
     match super::metrics::Metrics::ram() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }
@@ -131,7 +133,7 @@ fn test_ram() {
 #[test]
 fn test_users() {
     match super::metrics::Metrics::users() {
-        Ok(buf) => assert!(buf.len() != 0),
+        Ok(buf) => assert_ne!(buf.len(), 0),
         Err(_) => assert!(false),
     }
 }

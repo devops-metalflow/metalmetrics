@@ -68,9 +68,13 @@ impl Metrics {
             }
         };
 
-        let contents = fs::read_to_string("/assets/assets/assets.ini")?;
-        let lines = contents.lines();
+        let contents = fs::read_to_string("/assets/assets/assets.ini");
+        if contents.is_err() {
+            return Ok("".to_string());
+        }
 
+        let contents = contents.unwrap();
+        let lines = contents.lines();
         let mut buf = String::new();
 
         for item in lines {
