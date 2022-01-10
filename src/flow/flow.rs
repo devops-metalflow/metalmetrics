@@ -1,6 +1,6 @@
 use crate::config::config::{Config, VERSION};
-use flow::flow_proto_server::{FlowProto, FlowProtoServer};
-use flow::{FlowReply, FlowRequest};
+use flow::metrics_proto_server::{MetricsProto, MetricsProtoServer};
+use flow::{MetricsReply, MetricsRequest};
 use std::error::Error;
 use tonic::{transport::Server, Request, Response, Status};
 
@@ -22,7 +22,7 @@ impl Flow {
         };
 
         Server::builder()
-            .add_service(FlowProtoServer::new(server))
+            .add_service(MetricsProtoServer::new(server))
             .serve(url)
             .await?;
 
@@ -36,11 +36,11 @@ pub struct FlowServer {
 }
 
 #[tonic::async_trait]
-impl FlowProto for FlowServer {
-    async fn send_flow(
+impl MetricsProto for FlowServer {
+    async fn send_metrics(
         &self,
-        request: Request<FlowRequest>,
-    ) -> Result<Response<FlowReply>, Status> {
+        request: Request<MetricsRequest>,
+    ) -> Result<Response<MetricsReply>, Status> {
         let buf = request.into_inner().message;
 
         let err: String;
@@ -62,7 +62,7 @@ impl FlowProto for FlowServer {
             }
         }
 
-        let reply = flow::FlowReply {
+        let reply = flow::MetricsReply {
             error: err,
             output: out,
         };

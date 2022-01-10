@@ -3,18 +3,18 @@ syntax = "proto3";
 package flow;
 
 // The service definition.
-service FlowProto {
-  // Sends flow
-  rpc SendFlow (FlowRequest) returns (FlowReply) {}
+service MetricsProto {
+  // Sends metrics
+  rpc SendMetrics (MetricsRequest) returns (MetricsReply) {}
 }
 
 // The request message.
-message FlowRequest {
+message MetricsRequest {
   string message = 1;
 }
 
 // The response message.
-message FlowReply {
+message MetricsReply {
   string error = 1;
   string output = 2;
 }
