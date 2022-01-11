@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: worker
 metadata:
-  name: metalmetrics-rs
+  name: metalmetrics
 spec:
   metrics:
     - cpu

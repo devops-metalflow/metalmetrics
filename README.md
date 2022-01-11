@@ -1,14 +1,14 @@
-# metalmetrics-rs
+# metalmetrics
 
-[![Actions Status](https://github.com/craftslab/metalmetrics-rs/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/craftslab/metalmetrics-rs/actions?query=workflow%3ACI)
-[![License](https://img.shields.io/github/license/craftslab/metalmetrics-rs.svg?color=brightgreen)](https://github.com/craftslab/metalmetrics-rs/blob/master/LICENSE)
-[![Tag](https://img.shields.io/github/tag/craftslab/metalmetrics-rs.svg?color=brightgreen)](https://github.com/craftslab/metalmetrics-rs/tags)
+[![Actions Status](https://github.com/devops-metalflow/metalmetrics/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/devops-metalflow/metalmetrics/actions?query=workflow%3ACI)
+[![License](https://img.shields.io/github/license/devops-metalflow/metalmetrics.svg?color=brightgreen)](https://github.com/devops-metalflow/metalmetrics/blob/master/LICENSE)
+[![Tag](https://img.shields.io/github/tag/devops-metalflow/metalmetrics.svg?color=brightgreen)](https://github.com/devops-metalflow/metalmetrics/tags)
 
 
 
 ## Introduction
 
-*metalmetrics-rs* is a worker of *[metalflow](https://github.com/craftslab/metalflow/)* written in Rust.
+*metalmetrics* is a worker of *[metalflow](https://github.com/devops-metalflow/metalflow/)* written in Rust.
 
 
 
@@ -23,7 +23,7 @@
 - **Local mode**
 
 ```bash
-./metalmetrics-rs --config-file="config.yml" --output-file="output.json"
+./metalmetrics --config-file="config.yml" --output-file="output.json"
 ```
 
 
@@ -31,7 +31,7 @@
 - **Service mode**
 
 ```bash
-./metalmetrics-rs --config-file="config.yml" --listen-url="127.0.0.1:9090"
+./metalmetrics --config-file="config.yml" --listen-url="127.0.0.1:9090"
 ```
 
 
@@ -40,7 +40,7 @@
 
 ```
 USAGE:
-    metalmetrics-rs [OPTIONS] --config-file <NAME>
+    metalmetrics [OPTIONS] --config-file <NAME>
 
 OPTIONS:
     -c, --config-file <NAME>    Config file (.yml)
@@ -54,15 +54,15 @@ OPTIONS:
 
 ## Settings
 
-*metalmetrics-rs* parameters can be set in the directory [config](https://github.com/craftslab/metalmetrics-rs/blob/master/src/config).
+*metalmetrics* parameters can be set in the directory [config](https://github.com/devops-metalflow/metalmetrics/blob/master/src/config).
 
-An example of configuration in [config.yml](https://github.com/craftslab/metalmetrics-rs/blob/master/src/config/config.yml):
+An example of configuration in [config.yml](https://github.com/devops-metalflow/metalmetrics/blob/master/src/config/config.yml):
 
 ```yaml
 apiVersion: v1
 kind: worker
 metadata:
-  name: metalmetrics-rs
+  name: metalmetrics
 spec:
   metrics:
     - cpu

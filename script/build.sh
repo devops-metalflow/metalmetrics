@@ -2,8 +2,8 @@
 
 build=$(date +%FT%T%z)
 
-linux="target/x86_64-unknown-linux-gnu/release/metalmetrics-rs"
-windows="target/x86_64-pc-windows-gnu/release/metalmetrics-rs.exe"
+linux="target/x86_64-unknown-linux-gnu/release/metalmetrics"
+windows="target/x86_64-pc-windows-gnu/release/metalmetrics.exe"
 
 if [ "$1" = "all" ]; then
   build=$build cargo build --release --all-features --all-targets --target x86_64-pc-windows-gnu

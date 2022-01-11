@@ -14,7 +14,7 @@ impl Argument {
         self.version_info =
             concat!(env!("CARGO_PKG_VERSION"), "-build-", env!("build")).to_string();
 
-        let matches = App::new("metalmetrics-rs")
+        let matches = App::new("metalmetrics")
             .version(&*self.version_info)
             .arg(
                 Arg::new("config_file")
