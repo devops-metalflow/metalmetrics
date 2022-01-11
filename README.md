@@ -1,7 +1,7 @@
 # metalmetrics
 
-[![Actions Status](https://github.com/devops-metalflow/metalmetrics/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/devops-metalflow/metalmetrics/actions?query=workflow%3ACI)
-[![License](https://img.shields.io/github/license/devops-metalflow/metalmetrics.svg?color=brightgreen)](https://github.com/devops-metalflow/metalmetrics/blob/master/LICENSE)
+[![Actions Status](https://github.com/devops-metalflow/metalmetrics/workflows/CI/badge.svg?branch=main&event=push)](https://github.com/devops-metalflow/metalmetrics/actions?query=workflow%3ACI)
+[![License](https://img.shields.io/github/license/devops-metalflow/metalmetrics.svg?color=brightgreen)](https://github.com/devops-metalflow/metalmetrics/blob/main/LICENSE)
 [![Tag](https://img.shields.io/github/tag/devops-metalflow/metalmetrics.svg?color=brightgreen)](https://github.com/devops-metalflow/metalmetrics/tags)
 
 
@@ -54,9 +54,9 @@ OPTIONS:
 
 ## Settings
 
-*metalmetrics* parameters can be set in the directory [config](https://github.com/devops-metalflow/metalmetrics/blob/master/src/config).
+*metalmetrics* parameters can be set in the directory [config](https://github.com/devops-metalflow/metalmetrics/blob/main/src/config).
 
-An example of configuration in [config.yml](https://github.com/devops-metalflow/metalmetrics/blob/master/src/config/config.yml):
+An example of configuration in [config.yml](https://github.com/devops-metalflow/metalmetrics/blob/main/src/config/config.yml):
 
 ```yaml
 apiVersion: v1
