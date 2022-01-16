@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - name: Install
         run: |
           rustup update --no-self-update stable
@@ -34,6 +36,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - name: Install
         run: |
           rustup update --no-self-update stable
