@@ -15,7 +15,7 @@
 
 ## Prerequisites
 
-- Rust >= 1.52.0
+- Rust >= 1.59.0
 
 
 
