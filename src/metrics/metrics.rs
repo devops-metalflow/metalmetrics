@@ -4,6 +4,7 @@ use heim::{cpu, disk, host, memory, net, units};
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
+use std::net::UdpSocket;
 use std::path::Path;
 use std::process::Command;
 
@@ -135,21 +136,10 @@ impl Metrics {
 
     pub fn ip() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
-            let mut buf: Vec<String> = vec![];
-            let nic = net::nic().await?;
-            futures::pin_mut!(nic);
-
-            while let Some(item) = nic.next().await {
-                let item = item?;
-                if !item.is_loopback() && item.is_up() {
-                    match item.address() {
-                        net::Address::Inet(addr) => buf.push(addr.ip().to_string()),
-                        _ => {}
-                    };
-                }
-            }
-
-            Ok(format!("{}", buf.join("\n")))
+            let socket = UdpSocket::bind("0.0.0.0:0")?;
+            socket.connect("8.8.8.8:8")?;
+            let addr = socket.local_addr().unwrap();
+            Ok(format!("{}", addr.ip().to_string()))
         })
     }
 
