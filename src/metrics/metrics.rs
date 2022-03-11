@@ -158,21 +158,42 @@ impl Metrics {
                 _ => "".to_string(),
             };
 
-            let mut buf: Vec<String> = vec![];
+            let mut name: String = "".to_string();
+            let ip = Metrics::ip()?;
             let nic = net::nic().await?;
             futures::pin_mut!(nic);
 
             while let Some(item) = nic.next().await {
                 let item = item?;
-                if !item.is_loopback() && item.is_up() {
+                match item.address() {
+                    net::Address::Inet(addr) => {
+                        if addr.ip().to_string() == ip {
+                            name = item.name().parse().unwrap();
+                            break;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            let mut buf: String = "".to_string();
+            let nic = net::nic().await?;
+            futures::pin_mut!(nic);
+
+            while let Some(item) = nic.next().await {
+                let item = item?;
+                if item.name().to_string() == name {
                     match item.address() {
-                        net::Address::Link(addr) => buf.push(helper(addr)),
+                        net::Address::Link(addr) => {
+                            buf = helper(addr);
+                            break;
+                        }
                         _ => {}
                     };
                 }
             }
 
-            Ok(format!("{}", buf.join("\n")))
+            Ok(format!("{}", buf))
         })
     }
 
