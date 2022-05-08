@@ -96,7 +96,7 @@ impl Metrics {
             let count = cpu::logical_count().await?;
 
             let measure_before = cpu::usage().await?;
-            Delay::new(Duration::from_millis(100)).await;
+            Delay::new(Duration::from_millis(10000)).await;
             let measure_after = cpu::usage().await?;
             let percent = (measure_after - measure_before).get::<units::ratio::percent>();
 
