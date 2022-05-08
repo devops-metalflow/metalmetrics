@@ -1,5 +1,6 @@
 use crate::config::config::{Config, METRICS, NAME, SEP};
 use futures::StreamExt;
+use futures_timer::Delay;
 use heim::{cpu, disk, host, memory, net, units};
 use std::collections::HashMap;
 use std::error::Error;
@@ -7,6 +8,7 @@ use std::fs;
 use std::net::UdpSocket;
 use std::path::Path;
 use std::process::Command;
+use std::time::Duration;
 
 pub struct Metrics {}
 
@@ -92,7 +94,13 @@ impl Metrics {
         // awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo
         smol::block_on(async {
             let count = cpu::logical_count().await?;
-            Ok(format!("{} CPU", count))
+
+            let measure_before = cpu::usage().await?;
+            Delay::new(Duration::from_millis(100)).await;
+            let measure_after = cpu::usage().await?;
+            let percent = (measure_after - measure_before).get::<units::ratio::percent>();
+
+            Ok(format!("{} CPU ({}% Used)", count, percent))
         })
     }
 
