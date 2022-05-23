@@ -100,7 +100,7 @@ impl Metrics {
             let measure_after = cpu::usage().await?;
             let percent = (measure_after - measure_before).get::<units::ratio::percent>();
 
-            Ok(format!("{} CPU ({}% Used)", count, percent))
+            Ok(format!("{} CPU ({}% Used)", count, percent as u64 / count))
         })
     }
 
