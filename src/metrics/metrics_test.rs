@@ -145,3 +145,11 @@ fn test_users() {
         Err(_) => assert!(false),
     }
 }
+
+#[test]
+fn test_wake() {
+    match super::metrics::Metrics::wake() {
+        Ok(buf) => assert_ne!(buf.len(), 0),
+        Err(_) => assert!(false),
+    }
+}

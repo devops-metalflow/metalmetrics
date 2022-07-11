@@ -27,6 +27,7 @@ impl Metrics {
             "os" => Metrics::os(),
             "ram" => Metrics::ram(),
             "users" => Metrics::users(),
+            "wake" => Metrics::wake(),
             &_ => Err("spec invalid".into()),
         };
 
@@ -283,6 +284,46 @@ impl Metrics {
         };
 
         let output = Command::new("getent").arg("passwd").output()?;
+        if !output.status.success() {
+            return Err("invalid".into());
+        }
+
+        match String::from_utf8(output.stdout) {
+            Ok(buf) => Ok(helper(buf.lines())),
+            Err(_) => Err("invalid".into()),
+        }
+    }
+
+    pub fn wake() -> Result<String, Box<dyn Error>> {
+        // sudo apt install ethtool
+        // sudo ethtool eth0
+        //
+        // Output Example
+        // Supports Wake-on: pumbg
+        // Wake-on: d
+        //
+        // Option  Description
+        // b       Wake on broadcast messages
+        // d       Wake on nothing
+        // g       Wake on MagicPacket messages
+        // m       Wake on multicast messages
+        // p       Wake on PHY activity
+        // u       Wake on unicast messages
+        let helper = |mut data: std::str::Lines| {
+            let mut buf: Vec<String> = vec![];
+            while let Some(item) = data.next() {
+                let collect: Vec<&str> = item.split(":").collect();
+                let key = collect[0].parse::<String>().unwrap();
+                if key.contains("Wake-on") {
+                    buf.push(item.to_string());
+                }
+            }
+            format!("{}", buf.join("\n"))
+        };
+
+        let name = Metrics::eth()?;
+
+        let output = Command::new("ethtool").arg(name).output()?;
         if !output.status.success() {
             return Err("invalid".into());
         }

@@ -77,6 +77,7 @@ spec:
     - os
     - ram
     - users
+    - wake
 ```
 
 
@@ -95,6 +96,7 @@ Project License can be found [here](LICENSE).
 
 ## Reference
 
+- [enabling-wake-on-lan](https://necromuralist.github.io/posts/enabling-wake-on-lan/)
 - [health-check-script](https://github.com/SimplyLinuxFAQ/health-check-script)
 - [heim](https://github.com/heim-rs/heim)
 - [inxi](https://github.com/smxi/inxi)
