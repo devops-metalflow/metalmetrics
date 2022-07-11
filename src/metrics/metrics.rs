@@ -315,7 +315,7 @@ impl Metrics {
                 let collect: Vec<&str> = item.split(":").collect();
                 let key = collect[0].parse::<String>().unwrap();
                 if key.contains("Wake-on") {
-                    buf.push(item.to_string());
+                    buf.push(item.to_string().trim().parse().unwrap());
                 }
             }
             format!("{}", buf.join("\n"))
