@@ -75,6 +75,14 @@ fn test_disk() {
 }
 
 #[test]
+fn test_eth() {
+    match super::metrics::Metrics::eth() {
+        Ok(buf) => assert_ne!(buf.len(), 0),
+        Err(_) => assert!(false),
+    }
+}
+
+#[test]
 fn test_io() {
     match super::metrics::Metrics::io() {
         Ok(buf) => assert_ne!(buf.len(), 0),

@@ -18,6 +18,7 @@ impl Metrics {
             "assets" => Metrics::assets(),
             "cpu" => Metrics::cpu(),
             "disk" => Metrics::disk(),
+            "eth" => Metrics::eth(),
             "io" => Metrics::io(),
             "ip" => Metrics::ip(),
             "kernel" => Metrics::kernel(),
@@ -76,9 +77,9 @@ impl Metrics {
             return Ok("".to_string());
         }
 
+        let mut buf = String::new();
         let contents = contents.unwrap();
         let lines = contents.lines();
-        let mut buf = String::new();
 
         for item in lines {
             buf = helper(item.parse().unwrap());
@@ -116,6 +117,30 @@ impl Metrics {
                 "{:.1} GB ({:.1} GB Used)",
                 total as f64, used as f64
             ))
+        })
+    }
+
+    pub fn eth() -> Result<String, Box<dyn Error>> {
+        smol::block_on(async {
+            let mut name: String = "".to_string();
+            let ip = Metrics::ip()?;
+            let nic = net::nic().await?;
+            futures::pin_mut!(nic);
+
+            while let Some(item) = nic.next().await {
+                let item = item?;
+                match item.address() {
+                    net::Address::Inet(addr) => {
+                        if addr.ip().to_string() == ip {
+                            name = item.name().parse().unwrap();
+                            break;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+
+            Ok(format!("{}", name))
         })
     }
 
@@ -166,25 +191,8 @@ impl Metrics {
                 _ => "".to_string(),
             };
 
-            let mut name: String = "".to_string();
-            let ip = Metrics::ip()?;
-            let nic = net::nic().await?;
-            futures::pin_mut!(nic);
-
-            while let Some(item) = nic.next().await {
-                let item = item?;
-                match item.address() {
-                    net::Address::Inet(addr) => {
-                        if addr.ip().to_string() == ip {
-                            name = item.name().parse().unwrap();
-                            break;
-                        }
-                    }
-                    _ => {}
-                }
-            }
-
             let mut buf: String = "".to_string();
+            let name = Metrics::eth()?;
             let nic = net::nic().await?;
             futures::pin_mut!(nic);
 

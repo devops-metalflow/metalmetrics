@@ -68,6 +68,7 @@ spec:
   metrics:
     - cpu
     - disk
+    - eth
     - io
     - ip
     - kernel
