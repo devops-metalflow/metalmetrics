@@ -24,7 +24,7 @@
 - **Local mode**
 
 ```bash
-./metalmetrics --config-file="config.yml" --output-file="output.json"
+sudo ./metalmetrics --config-file="config.yml" --output-file="output.json"
 ```
 
 
@@ -32,7 +32,7 @@
 - **Service mode**
 
 ```bash
-./metalmetrics --config-file="config.yml" --listen-url="127.0.0.1:9090"
+sudo ./metalmetrics --config-file="config.yml" --listen-url="127.0.0.1:9090"
 ```
 
 
