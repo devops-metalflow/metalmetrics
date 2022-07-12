@@ -104,3 +104,4 @@ Project License can be found [here](LICENSE).
 - [rust-psutil](https://github.com/rust-psutil/rust-psutil)
 - [sysperf](https://github.com/iandk/sysperf)
 - [sysstat](https://github.com/sysstat/sysstat)
+- [ubuntu-wake-on-lan](https://sparkydogx.github.io/2019/01/16/ubuntu-wake-on-lan/)
