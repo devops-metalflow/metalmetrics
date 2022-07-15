@@ -96,10 +96,12 @@ Project License can be found [here](LICENSE).
 
 ## Reference
 
+- [duf](https://github.com/muesli/duf)
 - [enabling-wake-on-lan](https://necromuralist.github.io/posts/enabling-wake-on-lan/)
 - [health-check-script](https://github.com/SimplyLinuxFAQ/health-check-script)
 - [heim](https://github.com/heim-rs/heim)
 - [inxi](https://github.com/smxi/inxi)
+- [procfs](https://github.com/eminence/procfs)
 - [rust-grpc](https://gist.github.com/craftslab/c1b0e5c7f670d6f42a3623d04fddf8c1)
 - [rust-psutil](https://github.com/rust-psutil/rust-psutil)
 - [sysperf](https://github.com/iandk/sysperf)

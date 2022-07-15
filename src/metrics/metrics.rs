@@ -2,6 +2,7 @@ use crate::config::config::{Config, METRICS, NAME, SEP};
 use futures::StreamExt;
 use futures_timer::Delay;
 use heim::{cpu, disk, host, memory, net, units};
+use procfs::process::Process;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
@@ -107,12 +108,23 @@ impl Metrics {
     }
 
     pub fn disk() -> Result<String, Box<dyn Error>> {
+        // cat /proc/self/mountinfo
         // df -hPl | grep -wvE '\\-|none|tmpfs|devtmpfs|by-uuid|chroot|Filesystem|udev|docker' | awk '{print $2}'
         // df -hPl | grep -wvE '\\-|none|tmpfs|devtmpfs|by-uuid|chroot|Filesystem|udev|docker' | awk '{print $3}'
         smol::block_on(async {
-            let usage = disk::usage(Path::new("/")).await?;
-            let total = usage.total().get::<units::information::gigabyte>();
-            let used = usage.used().get::<units::information::gigabyte>();
+            let mut total: u64 = 0;
+            let mut used: u64 = 0;
+
+            for mount in Process::myself().unwrap().mountinfo().unwrap() {
+                if mount.fs_type == "ext4" {
+                    let usage =
+                        disk::usage(Path::new(&mount.mount_point.display().to_string())).await?;
+                    let t = usage.total().get::<units::information::gigabyte>();
+                    let u = usage.used().get::<units::information::gigabyte>();
+                    total += t;
+                    used += u;
+                }
+            }
 
             Ok(format!(
                 "{:.1} GB ({:.1} GB Used)",
