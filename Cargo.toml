@@ -33,6 +33,7 @@ clap = "3.0.0-beta.4"
 futures = "0.3.17"
 futures-timer = "3.0.2"
 heim = { version = "0.1.0-rc.1", features = ["cpu", "disk", "host", "memory", "net"] }
+heim-common = { version = "0.1.0-rc.1" }
 procfs = "0.13.2"
 prost = "0.9.0"
 serde = "1.0"
