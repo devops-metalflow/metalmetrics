@@ -106,7 +106,7 @@ impl Metrics {
                                 let fields: Vec<&str> = line.split_whitespace().collect();
                                 // Expect 4 tokens - 'cpu', 'mhz', ':', <val>
                                 buf.push_str(&fields[3].parse::<f32>().unwrap().to_string());
-                                buf.push_str(&"MHz".to_string());
+                                buf.push_str(&" MHz".to_string());
                                 break;
                             }
                         }
