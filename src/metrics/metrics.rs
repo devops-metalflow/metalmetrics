@@ -2,7 +2,6 @@ use crate::config::config::{Config, METRICS, NAME, SEP};
 use futures::StreamExt;
 use futures_timer::Delay;
 use heim::{cpu, disk, host, memory, net, units};
-use heim_common::units::frequency;
 use procfs::process::Process;
 use std::collections::HashMap;
 use std::error::Error;
@@ -97,6 +96,26 @@ impl Metrics {
     pub fn cpu() -> Result<String, Box<dyn Error>> {
         // awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo
         smol::block_on(async {
+            let helper = || -> String {
+                let data = fs::read_to_string("/proc/cpuinfo");
+                match data {
+                    Ok(data) => {
+                        let mut buf: String = " ".to_owned();
+                        for line in data.lines() {
+                            if line.to_lowercase().starts_with("cpu mhz") {
+                                let fields: Vec<&str> = line.split_whitespace().collect();
+                                // Expect 4 tokens - 'cpu', 'mhz', ':', <val>
+                                buf.push_str(&fields[3].parse::<f32>().unwrap().to_string());
+                                buf.push_str(&"MHz".to_string());
+                                break;
+                            }
+                        }
+                        buf
+                    }
+                    Err(_) => "".to_string(),
+                }
+            };
+
             let count = cpu::logical_count().await.unwrap();
 
             let measure_before = cpu::usage().await?;
@@ -104,18 +123,12 @@ impl Metrics {
             let measure_after = cpu::usage().await?;
             let percent = (measure_after - measure_before).get::<units::ratio::percent>();
 
-            let freq;
-            match cpu::frequency().await {
-                Ok(f) => {
-                    match f.max() {
-                        Some(r) => freq = r.get::<frequency::hertz>().to_string(),
-                        None => freq = "".to_string()
-                    }
-                },
-                Err(_) => freq = "".to_string(),
-            }
-
-            Ok(format!("{} CPU ({}% Used) {}", count, percent as u64 / count, freq))
+            Ok(format!(
+                "{} CPU ({}% Used){}",
+                count,
+                percent as u64 / count,
+                helper()
+            ))
         })
     }
 

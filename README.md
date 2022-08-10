@@ -85,7 +85,24 @@ spec:
 ## Output
 
 ```
-
+{
+    "metrics": [
+        {
+            "os": "Ubuntu 20.04.4 LTS",
+            "mac": "00:01:02:03:04:05",
+            "ram": "12 GB (0 GB Used)",
+            "network": "RX packets 32301 TX packets 6372",
+            "wake": "Supports Wake-on:g\nWake-on: g",
+            "users": "name",
+            "io": "RD 712836 KB WR 3683508 KB",
+            "cpu": "16 CPU (0% Used) 1796.563MHz",
+            "ip": "127.0.0.1",
+            "kernel": "Linux 5.4.0-120-generic",
+            "eth": "eth0",
+            "disk": "269.0 GB (17.0 GB Used)"
+        }
+    ]
+}
 ```
 
 
