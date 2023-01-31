@@ -2,14 +2,14 @@ use crate::config::config::{Config, METRICS, NAME, SEP};
 use futures::StreamExt;
 use futures_timer::Delay;
 use heim::{cpu, disk, host, memory, net, units};
-use procfs::process::Process;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::net::UdpSocket;
-use std::path::Path;
 use std::process::Command;
+use std::str;
 use std::time::Duration;
+use sysinfo::{DiskExt, System, SystemExt};
 
 pub struct Metrics {}
 
@@ -140,10 +140,13 @@ impl Metrics {
             let mut total: u64 = 0;
             let mut used: u64 = 0;
 
-            for mount in Process::myself().unwrap().mountinfo().unwrap() {
-                if mount.fs_type == "ext4" {
-                    let usage =
-                        disk::usage(Path::new(&mount.mount_point.display().to_string())).await?;
+            let mut sys = System::new_all();
+            sys.refresh_all();
+
+            for item in sys.disks() {
+                let t = str::from_utf8(item.file_system()).unwrap();
+                if t == "ext4" || t == "exFAT" || t == "FAT32" || t == "NTFS" {
+                    let usage = disk::usage(item.mount_point()).await?;
                     let t = usage.total().get::<units::information::gigabyte>();
                     let u = usage.used().get::<units::information::gigabyte>();
                     total += t;
