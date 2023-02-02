@@ -9,7 +9,7 @@ use std::net::UdpSocket;
 use std::process::Command;
 use std::str;
 use std::time::Duration;
-use sysinfo::{DiskExt, System, SystemExt};
+use sysinfo::{DiskExt, NetworkExt, System, SystemExt, UserExt};
 
 pub struct Metrics {}
 
@@ -139,7 +139,6 @@ impl Metrics {
         smol::block_on(async {
             let mut total: u64 = 0;
             let mut used: u64 = 0;
-
             let mut sys = System::new_all();
             sys.refresh_all();
 
@@ -163,25 +162,38 @@ impl Metrics {
 
     pub fn eth() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
-            let mut name: String = "".to_string();
-            let ip = Metrics::ip()?;
-            let nic = net::nic().await?;
-            futures::pin_mut!(nic);
+            if cfg!(windows) {
+                let mut name: Vec<String> = vec![];
+                let mut sys = System::new_all();
+                sys.refresh_all();
+                let networks = sys.networks();
 
-            while let Some(item) = nic.next().await {
-                let item = item?;
-                match item.address() {
-                    net::Address::Inet(addr) => {
-                        if addr.ip().to_string() == ip {
-                            name = item.name().parse().unwrap();
-                            break;
-                        }
-                    }
-                    _ => {}
+                for (item, _) in networks {
+                    name.push(item.to_string());
                 }
-            }
 
-            Ok(format!("{}", name))
+                Ok(format!("{}", name.join("\n")))
+            } else {
+                let mut name: String = "".to_string();
+                let ip = Metrics::ip()?;
+                let nic = net::nic().await?;
+                futures::pin_mut!(nic);
+
+                while let Some(item) = nic.next().await {
+                    let item = item?;
+                    match item.address() {
+                        net::Address::Inet(addr) => {
+                            if addr.ip().to_string() == ip {
+                                name = item.name().parse().unwrap();
+                                break;
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+
+                Ok(format!("{}", name))
+            }
         })
     }
 
@@ -220,37 +232,56 @@ impl Metrics {
     pub fn kernel() -> Result<String, Box<dyn Error>> {
         // uname -sr
         smol::block_on(async {
-            let platform = host::platform().await?;
-            Ok(format!("{} {}", platform.system(), platform.release()))
+            if cfg!(windows) {
+                let mut sys = System::new_all();
+                sys.refresh_all();
+                Ok(format!("Kernel {}", sys.kernel_version().unwrap()))
+            } else {
+                let platform = host::platform().await?;
+                Ok(format!("{} {}", platform.system(), platform.release()))
+            }
         })
     }
 
     pub fn mac() -> Result<String, Box<dyn Error>> {
         smol::block_on(async {
-            let helper = |data| match data {
-                net::MacAddr::V6(buf) => buf.to_string(),
-                _ => "".to_string(),
-            };
+            if cfg!(windows) {
+                let mut buf: Vec<String> = vec![];
+                let mut sys = System::new_all();
+                sys.refresh_all();
+                let networks = sys.networks();
 
-            let mut buf: String = "".to_string();
-            let name = Metrics::eth()?;
-            let nic = net::nic().await?;
-            futures::pin_mut!(nic);
-
-            while let Some(item) = nic.next().await {
-                let item = item?;
-                if item.name().to_string() == name {
-                    match item.address() {
-                        net::Address::Link(addr) => {
-                            buf = helper(addr);
-                            break;
-                        }
-                        _ => {}
-                    };
+                for (_, item) in networks {
+                    buf.push(item.mac_address().to_string());
                 }
-            }
 
-            Ok(format!("{}", buf))
+                Ok(format!("{}", buf.join("\n")))
+            } else {
+                let helper = |data| match data {
+                    net::MacAddr::V6(buf) => buf.to_string(),
+                    _ => "".to_string(),
+                };
+
+                let mut buf: String = "".to_string();
+                let name = Metrics::eth()?;
+                let nic = net::nic().await?;
+                futures::pin_mut!(nic);
+
+                while let Some(item) = nic.next().await {
+                    let item = item?;
+                    if item.name().to_string() == name {
+                        match item.address() {
+                            net::Address::Link(addr) => {
+                                buf = helper(addr);
+                                break;
+                            }
+                            _ => {}
+                        };
+                    }
+                }
+
+                Ok(format!("{}", buf))
+            }
         })
     }
 
@@ -279,18 +310,24 @@ impl Metrics {
 
     pub fn os() -> Result<String, Box<dyn Error>> {
         // awk -F'[= "]' '/PRETTY_NAME/{print $3,$4,$5}' /etc/os-release
-        let output = Command::new("awk")
-            .arg("-F[= \"]")
-            .arg("/PRETTY_NAME/{print $3,$4,$5}")
-            .arg("/etc/os-release")
-            .output()?;
-        if !output.status.success() {
-            return Err("invalid".into());
-        }
+        if cfg!(windows) {
+            let mut sys = System::new_all();
+            sys.refresh_all();
+            Ok(format!("{}", sys.long_os_version().unwrap()))
+        } else {
+            let output = Command::new("awk")
+                .arg("-F[= \"]")
+                .arg("/PRETTY_NAME/{print $3,$4,$5}")
+                .arg("/etc/os-release")
+                .output()?;
+            if !output.status.success() {
+                return Err("invalid".into());
+            }
 
-        match String::from_utf8(output.stdout) {
-            Ok(buf) => Ok(format!("{}", buf.trim())),
-            Err(_) => Err("invalid".into()),
+            match String::from_utf8(output.stdout) {
+                Ok(buf) => Ok(format!("{}", buf.trim())),
+                Err(_) => Err("invalid".into()),
+            }
         }
     }
 
@@ -311,26 +348,38 @@ impl Metrics {
 
     pub fn users() -> Result<String, Box<dyn Error>> {
         // getent passwd {1000..60000}
-        let helper = |mut data: std::str::Lines| {
+        if cfg!(windows) {
             let mut buf: Vec<String> = vec![];
-            while let Some(item) = data.next() {
-                let collect: Vec<&str> = item.split(":").collect();
-                let val = collect[2].parse::<i32>().unwrap();
-                if val >= 1000 && val <= 60000 {
-                    buf.push(collect[0].to_string());
-                }
+            let mut sys = System::new_all();
+            sys.refresh_all();
+
+            for item in sys.users() {
+                buf.push(item.name().parse().unwrap());
             }
-            format!("{}", buf.join("\n"))
-        };
 
-        let output = Command::new("getent").arg("passwd").output()?;
-        if !output.status.success() {
-            return Err("invalid".into());
-        }
+            Ok(format!("{}", buf.join("\n")))
+        } else {
+            let helper = |mut data: std::str::Lines| {
+                let mut buf: Vec<String> = vec![];
+                while let Some(item) = data.next() {
+                    let collect: Vec<&str> = item.split(":").collect();
+                    let val = collect[2].parse::<i32>().unwrap();
+                    if val >= 1000 && val <= 60000 {
+                        buf.push(collect[0].to_string());
+                    }
+                }
+                format!("{}", buf.join("\n"))
+            };
 
-        match String::from_utf8(output.stdout) {
-            Ok(buf) => Ok(helper(buf.lines())),
-            Err(_) => Err("invalid".into()),
+            let output = Command::new("getent").arg("passwd").output()?;
+            if !output.status.success() {
+                return Err("invalid".into());
+            }
+
+            match String::from_utf8(output.stdout) {
+                Ok(buf) => Ok(helper(buf.lines())),
+                Err(_) => Err("invalid".into()),
+            }
         }
     }
 
@@ -361,16 +410,20 @@ impl Metrics {
             format!("{}", buf.join("\n"))
         };
 
-        let name = Metrics::eth()?;
+        if cfg!(windows) {
+            Ok("".into())
+        } else {
+            let name = Metrics::eth()?;
 
-        let output = Command::new("ethtool").arg(name).output()?;
-        if !output.status.success() {
-            return Err("invalid".into());
-        }
+            let output = Command::new("ethtool").arg(name).output()?;
+            if !output.status.success() {
+                return Err("invalid".into());
+            }
 
-        match String::from_utf8(output.stdout) {
-            Ok(buf) => Ok(helper(buf.lines())),
-            Err(_) => Err("invalid".into()),
+            match String::from_utf8(output.stdout) {
+                Ok(buf) => Ok(helper(buf.lines())),
+                Err(_) => Err("invalid".into()),
+            }
         }
     }
 }
