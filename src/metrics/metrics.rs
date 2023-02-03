@@ -67,30 +67,34 @@ impl Metrics {
 
     pub fn assets() -> Result<String, Box<dyn Error>> {
         // cat /assets/assets/assets.ini
-        let helper = |data: String| -> String {
-            match data.strip_prefix("assetsNo=") {
-                Some(b) => b.parse().unwrap(),
-                None => "".to_string(),
+        if cfg!(windows) {
+            Ok("".into())
+        } else {
+            let helper = |data: String| -> String {
+                match data.strip_prefix("assetsNo=") {
+                    Some(b) => b.parse().unwrap(),
+                    None => "".to_string(),
+                }
+            };
+
+            let contents = fs::read_to_string("/assets/assets/assets.ini");
+            if contents.is_err() {
+                return Ok("".to_string());
             }
-        };
 
-        let contents = fs::read_to_string("/assets/assets/assets.ini");
-        if contents.is_err() {
-            return Ok("".to_string());
-        }
+            let mut buf = String::new();
+            let contents = contents.unwrap();
+            let lines = contents.lines();
 
-        let mut buf = String::new();
-        let contents = contents.unwrap();
-        let lines = contents.lines();
-
-        for item in lines {
-            buf = helper(item.parse().unwrap());
-            if !buf.is_empty() {
-                break;
+            for item in lines {
+                buf = helper(item.parse().unwrap());
+                if !buf.is_empty() {
+                    break;
+                }
             }
-        }
 
-        Ok(format!("{}", buf))
+            Ok(format!("{}", buf))
+        }
     }
 
     pub fn cpu() -> Result<String, Box<dyn Error>> {
