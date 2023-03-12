@@ -18,9 +18,11 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - name: Create release
+      - name: Install
+        run: make install
+      - name: Build
         run: make build
-      - name: Upload artifact
+      - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.event.repository.name }}
